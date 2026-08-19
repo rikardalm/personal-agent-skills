@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Installed skills overview</title>
+  <style>
+    :root {
+      --bg: #f7f6f1;
+      --surface: #fffefa;
+      --ink: #20211f;
+      --muted: #666861;
+      --rule: #dcdad0;
+      --personal: #166451;
+      --system: #755519;
+      --plugin: #435b8f;
+      --focus: #0f766e;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --serif: Charter, "Iowan Old Style", "Source Serif 4", ui-serif, Georgia, serif;
+      --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #11130f;
+        --surface: #181b16;
+        --ink: #eff0ea;
+        --muted: #a9aca3;
+        --rule: #34382f;
+        --personal: #72cbb4;
+        --system: #deb96a;
+        --plugin: #9cb6eb;
+        --focus: #5eead4;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); color: var(--ink); }
+    body { margin: 0; font: 15px/1.5 var(--sans); }
+    main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 64px 0 80px; }
+    header { max-width: 800px; border-bottom: 1px solid var(--rule); padding-bottom: 32px; }
+    .eyebrow { color: var(--muted); font: 600 12px/1.2 var(--sans); letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 10px 0 14px; font: 700 clamp(2.25rem, 7vw, 4.8rem)/.96 var(--serif); letter-spacing: -.035em; }
+    .lede { margin: 0; max-width: 68ch; color: var(--muted); font: 18px/1.55 var(--serif); }
+    .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin: 32px 0 36px; border-block: 1px solid var(--rule); }
+    .metric { padding: 20px 22px 20px 0; }
+    .metric + .metric { border-left: 1px solid var(--rule); padding-left: 22px; }
+    .metric strong { display: block; font: 700 2.2rem/1 var(--serif); }
+    .metric span { color: var(--muted); }
+    .controls { display: grid; grid-template-columns: minmax(220px, 1fr) auto; gap: 14px; align-items: center; margin-bottom: 20px; }
+    input[type="search"] { width: 100%; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); padding: 11px 13px; border-radius: 3px; font: inherit; }
+    input[type="search"]:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+    button { border: 1px solid var(--rule); background: transparent; color: var(--muted); padding: 8px 11px; border-radius: 999px; font: 600 12px/1 var(--sans); cursor: pointer; }
+    button:hover, button.active { color: var(--ink); border-color: currentColor; }
+    .section { margin-top: 38px; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+    h2 { margin: 0; font: 700 1.45rem/1.2 var(--serif); }
+    .section-note { color: var(--muted); font-size: 13px; }
+    .skill-list { border-top: 2px solid var(--ink); }
+    .skill { display: grid; grid-template-columns: minmax(190px, 1.05fr) minmax(280px, 2fr) 112px; gap: 20px; align-items: start; padding: 17px 0; border-bottom: 1px solid var(--rule); }
+    .name { font-weight: 700; overflow-wrap: anywhere; }
+    .namespace { display: block; margin-top: 2px; color: var(--muted); font: 11px/1.3 var(--mono); }
+    .description { color: var(--muted); }
+    .tag { justify-self: end; font: 700 11px/1.2 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+    .tag.personal { color: var(--personal); }
+    .tag.system { color: var(--system); }
+    .tag.plugin { color: var(--plugin); }
+    .empty { display: none; padding: 48px 0; color: var(--muted); font: 18px/1.5 var(--serif); text-align: center; }
+    footer { display: flex; justify-content: space-between; gap: 18px; margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 12px; }
+    #copy { border-radius: 3px; padding: 7px 10px; }
+    @media (max-width: 720px) {
+      main { padding-top: 38px; }
+      .summary { grid-template-columns: 1fr; }
+      .metric + .metric { border-left: 0; border-top: 1px solid var(--rule); padding-left: 0; }
+      .controls { grid-template-columns: 1fr; }
+      .skill { grid-template-columns: 1fr; gap: 7px; }
+      .tag { justify-self: start; grid-row: 1; }
+      .name { grid-row: 2; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Local capability map · 19 August 2026</div>
+      <h1>25 skills, three layers.</h1>
+      <p class="lede">A practical inventory of the skills currently available to Codex: your portable personal toolkit, built-in system capabilities, and workflows supplied by connected plugins.</p>
+    </header>
+
+    <section class="summary" aria-label="Skill totals">
+      <div class="metric"><strong>8</strong><span>universal personal skills</span></div>
+      <div class="metric"><strong>5</strong><span>built into Codex</span></div>
+      <div class="metric"><strong>12</strong><span>from six plugins</span></div>
+    </section>
+
+    <section class="controls" aria-label="Filter skills">
+      <input id="search" type="search" placeholder="Search names and capabilities…" autocomplete="off">
+      <div class="filters">
+        <button class="active" data-filter="all">All <span>25</span></button>
+        <button data-filter="personal">Personal <span>8</span></button>
+        <button data-filter="system">Built-in <span>5</span></button>
+        <button data-filter="plugin">Plugin <span>12</span></button>
+      </div>
+    </section>
+
+    <div id="catalog"></div>
+    <div id="empty" class="empty">No skills match that search.</div>
+
+    <footer>
+      <span>Based on skills advertised to the current Codex session. Dormant cache-only packages are intentionally excluded.</span>
+      <button id="copy">Copy as Markdown</button>
+    </footer>
+  </main>
+
+  <script>
+    const groups = [
+      {
+        id: 'personal', title: 'Universal personal skills',
+        note: 'Stored in ~/.agents/skills and shared across supported agents',
+        skills: [
+          ['agent-browser', 'Automates websites: navigation, forms, screenshots, scraping, login flows, and web-app testing.'],
+          ['claude-cli', 'Runs the Claude CLI non-interactively for a focused second opinion or one-shot prompt.'],
+          ['executive-summary', 'Turns long notes, reviews, reports, and project state into concise decision-ready summaries.'],
+          ['explain-like-junior', 'Explains complex plans and changes in simple language when diffs or terse prose hide the important shape.'],
+          ['find-skills', 'Discovers installable skills when you need a capability that may already exist.'],
+          ['html-artifacts', 'Creates self-contained interactive HTML for reports, comparisons, diagrams, explainers, and one-off tools.'],
+          ['release-readiness', 'Assesses whether current changes are genuinely ready to merge into main.'],
+          ['review-merit', 'Evaluates review feedback, prioritizes high-merit findings, and acts on the valid points.']
+        ]
+      },
+      {
+        id: 'system', title: 'Built-in Codex skills',
+        note: 'Maintained by the Codex installation',
+        skills: [
+          ['imagegen', 'Generates or edits raster images, illustrations, mockups, textures, and visual variants.'],
+          ['openai-docs', 'Answers questions about Codex, ChatGPT, OpenAI APIs, models, pricing, settings, and troubleshooting.'],
+          ['plugin-creator', 'Scaffolds and updates Codex plugin bundles, manifests, optional structure, and marketplace entries.'],
+          ['skill-creator', 'Guides the creation and improvement of effective reusable agent skills.'],
+          ['skill-installer', 'Lists and installs skills from curated sources or GitHub repositories.']
+        ]
+      },
+      {
+        id: 'plugin', title: 'Plugin-provided skills',
+        note: 'Available while their corresponding plugins are installed',
+        skills: [
+          ['github:github', 'Orients general GitHub repository, issue, and pull-request work.', 'GitHub'],
+          ['github:gh-address-comments', 'Inspects unresolved PR review threads and implements selected actionable fixes.', 'GitHub'],
+          ['github:gh-fix-ci', 'Diagnoses and fixes failing GitHub Actions checks on pull requests.', 'GitHub'],
+          ['github:yeet', 'Commits intentional local changes, pushes a branch, and opens a draft pull request.', 'GitHub'],
+          ['linear:linear', 'Reads, creates, and updates Linear issues, projects, and team workflows.', 'Linear'],
+          ['notion:notion-knowledge-capture', 'Captures conversations and decisions as structured, linked Notion knowledge.', 'Notion'],
+          ['notion:notion-meeting-intelligence', 'Builds meeting agendas and pre-reads from Notion context and supplemental research.', 'Notion'],
+          ['notion:notion-research-documentation', 'Researches across Notion and synthesizes cited briefs, comparisons, and reports.', 'Notion'],
+          ['notion:notion-spec-to-implementation', 'Turns Notion specifications into implementation plans, tasks, and progress tracking.', 'Notion'],
+          ['outlook-calendar:outlook-calendar', 'Manages Outlook events, availability, recurring meetings, RSVPs, and scheduling.', 'Outlook Calendar'],
+          ['outlook-email:outlook-email', 'Reads, searches, triages, drafts, sends, and organizes Outlook email.', 'Outlook Email'],
+          ['plugin-management:plugin-management', 'Discovers plugins and manages plugin connections, dependencies, and permissions.', 'Plugin Management']
+        ]
+      }
+    ];
+
+    const catalog = document.querySelector('#catalog');
+    const search = document.querySelector('#search');
+    const empty = document.querySelector('#empty');
+    let activeFilter = 'all';
+
+    function render() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      catalog.innerHTML = '';
+      groups.forEach(group => {
+        if (activeFilter !== 'all' && activeFilter !== group.id) return;
+        const matches = group.skills.filter(skill => skill.join(' ').toLowerCase().includes(query));
+        if (!matches.length) return;
+        visible += matches.length;
+        const section = document.createElement('section');
+        section.className = 'section';
+        section.innerHTML = `<div class="section-head"><h2>${group.title}</h2><span class="section-note">${group.note}</span></div><div class="skill-list"></div>`;
+        const list = section.querySelector('.skill-list');
+        matches.forEach(([name, description, provider]) => {
+          const row = document.createElement('article');
+          row.className = 'skill';
+          row.innerHTML = `<div class="name">${name}${provider ? `<span class="namespace">provided by ${provider}</span>` : ''}</div><div class="description">${description}</div><span class="tag ${group.id}">${group.id === 'personal' ? 'personal' : group.id === 'system' ? 'built-in' : 'plugin'}</span>`;
+          list.appendChild(row);
+        });
+        catalog.appendChild(section);
+      });
+      empty.style.display = visible ? 'none' : 'block';
+    }
+
+    search.addEventListener('input', render);
+    document.querySelectorAll('[data-filter]').forEach(button => {
+      button.addEventListener('click', () => {
+        activeFilter = button.dataset.filter;
+        document.querySelectorAll('[data-filter]').forEach(item => item.classList.toggle('active', item === button));
+        render();
+      });
+    });
+
+    document.querySelector('#copy').addEventListener('click', async event => {
+      const markdown = groups.map(group => `## ${group.title}\n\n${group.skills.map(([name, description]) => `- **${name}** — ${description}`).join('\n')}`).join('\n\n');
+      await navigator.clipboard.writeText(`# Installed skills overview\n\n${markdown}`);
+      const button = event.currentTarget;
+      const prior = button.textContent;
+      button.textContent = 'Copied';
+      setTimeout(() => button.textContent = prior, 1400);
+    });
+
+    render();
+  </script>
+</body>
+</html>

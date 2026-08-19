@@ -31,15 +31,17 @@ The CLI uses existing Git, GitHub CLI, or SSH authentication to access this priv
 - `executive-summary`
 - `explain-like-junior`
 - `find-skills`
+- `html-artifacts`
 - `release-readiness`
 - `review-merit`
 
 ## Upstream sources
 
-Two skills are vendored from public upstream projects:
+Three skills are vendored from public upstream projects:
 
 - `agent-browser`: <https://github.com/vercel-labs/agent-browser>
 - `find-skills`: <https://github.com/vercel-labs/skills>
+- `html-artifacts`: <https://github.com/dogum/html-artifacts>
 
 Review upstream changes before replacing the copies stored here. The other skills were imported from the existing local Codex installation.
 
