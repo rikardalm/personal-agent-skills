@@ -1,47 +1,36 @@
 # Decks
 
-A handful of `<section>` tags and twenty lines of JavaScript is a slide deck. Use this for short presentations the user wants to arrow-key through in a meeting — no Keynote, no export step, no PowerPoint roundtrip.
+A handful of `<section>` tags and twenty lines of JavaScript is a slide deck. Use this for short presentations the user arrow-keys through in a meeting — no Keynote, no export step.
 
-## When to make a deck
+A deck is **the one artifact that inverts the house palette** (`../design.md`): rooms project dark, so canvas and ink swap. Everything else holds — the type scale, the tight display tracking, mono eyebrows, and the single mesh gradient on the title slide.
 
-- The user explicitly says "deck," "slides," or "presentation."
-- The content is going to be presented *to others*, in a meeting, with someone narrating.
-- The user wants ~5–20 slides with strong visual hierarchy and minimal per-slide text.
-- The content has natural "beats" — points the speaker wants to land one at a time.
+## When to make one
 
-If the content is dense reference material that the reader will study on their own, a deck is wrong. Use the report/explainer pattern instead.
+The user says "deck," "slides," or "presentation"; the content is presented *to others* with someone narrating; ~5–20 slides with minimal per-slide text and natural beats.
 
-## Layout
+If it's dense reference material the reader studies alone, a deck is wrong — use the report pattern.
 
-- One `<section>` per slide, with a class like `slide`.
-- A presenter view that shows just the current slide, full-viewport. Not a scroll.
-- Arrow keys (`←`/`→`, optionally space) advance and reverse.
-- A small slide counter in the corner: `4 / 12`.
-- Optional: a thumbnail strip toggleable with `Esc` or a button, so the speaker can jump.
-- Optional: presenter notes accessible with a key (e.g., `n`) — a side panel with notes for the current slide. Useful when the deck is rehearsed.
+## Per-slide
 
-## Per-slide structure
+- **One idea per slide.** Two ideas means two slides; forced focus is the whole point.
+- **Big type.** Readable from the back of a room — the display scale, sized to the viewport with `clamp()`.
+- **Minimal words.** A slide is a visual aid, not a document. A paragraph on a slide means the speaker is competing with their own slide.
+- Title, the one main thing (chart, quote, code), maybe a small footnote. That's it.
 
-- One **idea** per slide. If a slide has two ideas, split it. The whole point of slides is forced focus.
-- Big type. The body text on a slide should be readable from the back of a room. Default to 32–48px for body, larger for titles.
-- Minimal words. A slide is a visual aid for a speaker, not a document. If there's a paragraph on the slide, the speaker is competing with their own slide.
-- Strong visual hierarchy: title, the one main thing (chart/quote/image/code), maybe a small footnote. That's it.
+## Load-bearing
 
-## What's load-bearing
+- Arrow-key navigation. A deck without it is a webpage that has slides on it.
+- A slide counter. Presenter and audience both want to know where they are.
+- Real fullscreen — a "press F" hint or a button. Browser chrome is distracting.
+- Fixed aspect handling; don't let layout shift between slides.
 
-- Keyboard navigation. A deck without arrow keys is a webpage that has slides on it.
-- Real fullscreen behavior. Add a "press F to fullscreen" hint or a button. Browser chrome is distracting in a presentation.
-- Slide counter. The presenter and audience both want to know where they are.
-- Aspect-ratio handling. Default to 16:9 with letterboxing on other aspect ratios — don't let layout shift between slides.
+## Avoid
 
-## Common mistakes
+- Making every slide a markdown-rendered card. One slide is a chart, the next a quote — don't homogenise them.
+- Cramming. Five bullets is two slides, or a table.
+- Transition animations. They distract and break when the user clicks fast.
 
-- Making each slide a markdown-rendered card. Slides are visual; one slide should be a chart, the next should be a quote, the next should be a photo. Don't homogenize them.
-- Cramming. If a slide has 5 bullets, it's two slides. Or a table on one slide.
-- Cute transition animations. Skip them. They distract and they break when the user clicks fast.
-- Forgetting the dark version. Most rooms project on dark. Make sure light-on-dark renders cleanly, or at minimum that the deck can be flipped with a key.
-
-## Example skeleton
+## Skeleton
 
 ```html
 <!doctype html>
@@ -51,30 +40,50 @@ If the content is dense reference material that the reader will study on their o
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Deck title</title>
   <style>
-    html, body { margin:0; height:100%; background:#0b0b10; color:#f4f4f7;
-                 font: 24px/1.4 system-ui, sans-serif; }
-    .slide { display:none; height:100vh; padding:6vh 8vw; box-sizing:border-box;
-             align-items:center; justify-content:center; flex-direction:column; }
-    .slide.active { display:flex; }
-    .slide h1 { font-size: 6vmin; margin: 0 0 .4em; }
-    .slide h2 { font-size: 4vmin; margin: 0; opacity: .8; }
-    .counter { position:fixed; bottom: 1em; right: 1em; opacity:.6; font-size:.7em; }
+    /* house tokens, inverted for projection */
+    :root{
+      --ink:#171717; --canvas:#fafafa; --mute:#8f8f8f;
+      --cyan:#50e3c2; --violet:#7928ca; --magenta:#eb367f;
+      --sans:Geist,"Geist Sans",Inter,ui-sans-serif,system-ui,sans-serif;
+      --mono:"Geist Mono","JetBrains Mono",ui-monospace,Menlo,monospace;
+      --md:16px; --lg:24px;
+    }
+    html,body{margin:0;height:100%;background:var(--ink);color:var(--canvas);
+              font:400 14px/20px var(--sans);-webkit-font-smoothing:antialiased}
+    .slide{display:none;height:100vh;padding:6vh 8vw;box-sizing:border-box;
+           flex-direction:column;justify-content:center;position:relative}
+    .slide.active{display:flex}
+    .slide .eyebrow{font:500 12px/16px var(--mono);text-transform:uppercase;
+                    color:var(--mute);margin:0 0 var(--lg)}
+    /* display scale sized to the room, tracking kept tight */
+    .slide h1{font:600 clamp(40px,7vmin,88px)/1.02 var(--sans);
+              letter-spacing:-.04em;margin:0 0 var(--md);max-width:22ch}
+    .slide h2{font:400 clamp(20px,3vmin,32px)/1.3 var(--sans);
+              color:var(--mute);margin:0;max-width:40ch}
+    .counter{position:fixed;bottom:var(--lg);right:var(--lg);
+             font:500 12px/16px var(--mono);color:var(--mute)}
+    /* the single flourish, title slide only */
+    .mesh{position:absolute;inset:auto -10% -30% 20%;height:90%;filter:blur(80px);
+      opacity:.3;pointer-events:none;
+      background:
+        radial-gradient(38% 46% at 20% 40%, var(--cyan) 0%, transparent 70%),
+        radial-gradient(36% 48% at 56% 30%, var(--violet) 0%, transparent 70%),
+        radial-gradient(32% 42% at 88% 44%, var(--magenta) 0%, transparent 72%);
+    }
   </style>
 </head>
 <body>
   <section class="slide active">
+    <div class="mesh" aria-hidden="true"></div>
+    <p class="eyebrow">Platform · Aug 2026</p>
     <h1>Why HTML beats markdown</h1>
     <h2>For the things agents now make</h2>
   </section>
 
   <section class="slide">
-    <h1>Information density</h1>
-    <p>Tables, SVG, color, interactivity — markdown can't.</p>
-  </section>
-
-  <section class="slide">
-    <!-- a chart or figure as the whole slide -->
-    <svg viewBox="0 0 400 200">...</svg>
+    <p class="eyebrow">01 — Density</p>
+    <h1>Tables, SVG, colour, interactivity</h1>
+    <h2>Markdown can't.</h2>
   </section>
 
   <div class="counter"><span id="i">1</span> / <span id="n"></span></div>
@@ -98,4 +107,4 @@ If the content is dense reference material that the reader will study on their o
 </html>
 ```
 
-That's the whole substrate. Twenty lines of JS, no build step, opens directly in a browser.
+Twenty lines of JS, no build step, opens directly in a browser.

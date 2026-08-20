@@ -1,95 +1,102 @@
 # Exploration & Planning
 
-For when the user is trying to *decide* something and needs to weigh options, or has decided and needs a plan dense enough to hand off.
+For when the user is deciding something and needs to weigh options, or has decided and needs a plan dense enough to hand off. House style: `../design.md`; token block and patterns in `matching-your-style.md`.
 
-## Side-by-side option comparison
+## Option comparison
 
-The single biggest win HTML has over markdown. Three approaches in markdown is three sequential sections the reader has to hold in their head simultaneously. Three approaches in HTML is three columns next to each other.
+The single biggest win HTML has over markdown. Three approaches in markdown is three sequential sections the reader holds in their head. In HTML it's a **criteria matrix**: criteria down the side, options across the top, so one vertical scan shows which column is losing and on what.
 
 **Layout**
-- One column per option (or one card per option in a responsive grid for 4+ options).
-- Each column has the same internal structure — same heading order, same sub-sections — so the reader can scan horizontally to compare.
-- Inside each column: a short framing sentence, the actual artifact (code snippet / mockup / sketch), a Pro/Con table, and a row of hard metrics.
-- A recommendation block at the bottom that picks one and explains why. Not "it depends" — actually pick.
+- One hairline card holding the matrix. Criteria as mono row labels, options as `h3`-scale column heads.
+- A hero row first — the number that decides it — with a rail under each figure so the gap is a shape before it's a digit.
+- Pro/con as a two-column-per-cell list, not prose. Bullets read as a sequence; a matrix reads as a comparison.
+- The recommendation takes `--hairline-soft` plus an accent-blue eyebrow. Never an inverted black column at this density.
+- A `decision` block below that picks one. Not "it depends" — actually pick.
 
-**What's load-bearing**
-- The pro/con as a *two-column table*, not a bulleted list. Bullets read as a sequence; a table reads as a comparison.
-- The hard metrics row at the bottom of each option (bundle size, complexity, testability, "SSR safe?", whatever's relevant). Numbers force the recommendation to be defensible.
-- Identical structure across columns. If approach 1 has a "Reuse" metric and approach 2 doesn't, the reader assumes approach 2 is bad at reuse — even if you just forgot to fill it in.
+**Load-bearing**
+- Identical criteria across all columns. A missing cell reads as a weakness, not an omission.
+- Hard numbers. They force the recommendation to be defensible.
 
-**Common mistakes**
-- Putting all the code in one block at the top and the comparison underneath. The whole point is that the code is *part* of the comparison.
-- Refusing to recommend. If the request was "show me three ways," the user wants to pick one — help them.
-- Three approaches that are actually one approach with minor variations. If they share 80% of the code, it's one approach with parameters.
+**Avoid**
+- Code in one block at the top with the comparison underneath. The artifact *is* the comparison.
+- Three approaches that share 80% of their code. That's one approach with parameters.
 
 ## Visual design exploration
 
-For "I'm not sure what direction to take this UI." Generate 4–6 *meaningfully different* directions in a single grid. Vary layout, density, tone, palette — not just font size.
+For "I'm not sure what direction to take this UI." Generate 4–6 *meaningfully different* directions in a grid — vary layout, information hierarchy, and interaction model before surface treatment. Each mockup is real rendered HTML with a caption naming the tradeoff it makes.
 
-**Layout**
-- Grid of mini-mockups, each with a short caption explaining what tradeoff it's making ("dense, info-first" vs "calm, single-task focus").
-- Each mockup is a real rendered HTML region, not a screenshot — the user can resize the browser to see how it responds.
-- Optional: clicking a mockup opens it full-width to inspect details.
-
-**Common mistakes**
-- Six variations of the same layout with different colors. Vary the *layout*, the *information hierarchy*, and the *interaction model* before varying surface treatment.
-- All six look like the default Tailwind dashboard. Push for distinct directions; one of them should feel almost wrong, to anchor the others.
+**Avoid** six variations of one layout with different colours, and six that all look like the default dashboard. One should feel almost wrong, to anchor the others.
 
 ## Implementation plan
 
-When the user has decided what to build and needs a plan dense enough to hand to an implementer (human or another agent).
+For handing work to an implementer, human or agent.
 
 **Layout**
-- Title and a one-paragraph problem statement.
-- A milestones strip at the top — visual timeline with phases, not a numbered list.
-- A data-flow diagram (inline SVG) showing what talks to what.
-- Inline mockups for any UI being touched.
-- The "risky code" — the 2–3 snippets that are load-bearing, with annotations on the tricky lines.
-- A risk table: risk / likelihood / mitigation.
-- A "what we're explicitly not doing" section. Equally important.
+- Problem statement, then a milestones strip — a visual timeline, not a numbered list.
+- A data-flow diagram (inline SVG). Don't skip it: past two components, prose can't convey topology.
+- The 2–3 load-bearing code snippets, annotated on the tricky lines.
+- A risk table: risk / likelihood / mitigation. Risks in prose disappear; risks in a table get addressed.
+- A "what we're explicitly not doing" section. It prevents scope creep before it starts.
 
-**What's load-bearing**
-- The data-flow diagram. Don't skip it. If the system has more than two components, the reader cannot hold the topology in their head from prose alone.
-- The risk table. Risks expressed as paragraphs disappear; risks in a table get addressed.
-- The "not doing" section. It prevents scope creep before it starts.
+**Avoid** listing every file that will be touched — the reader needs the shape of the change.
 
-**Common mistakes**
-- Treating this as a markdown plan with HTML wrapping. Use the format. Render the timeline as a timeline; render the data flow as a diagram.
-- Listing every file that will be touched. The reader doesn't need that — they need the shape of the change.
-
-## Example sketch
-
-A three-approach comparison, structurally:
+## Sketch
 
 ```html
-<main>
-  <header>
-    <h1>Three ways to implement debounced search</h1>
-    <p>Prompt that produced this · which option I'd pick</p>
+<main class="container">
+  <header class="masthead">
+    <div class="mesh" aria-hidden="true"></div>   <!-- the only colour on the page -->
+    <p class="eyebrow">RFC-0114 · Rev B</p>
+    <h1>Three ways to debounce search</h1>
+    <p class="dek">Prompt that produced this · which option I'd pick</p>
   </header>
 
-  <section class="grid grid-cols-3">
-    <article>
-      <h2>01. Inline useEffect + setTimeout</h2>
-      <p>One-line summary of the approach.</p>
-      <pre><code>...the code...</code></pre>
-      <table class="pros-cons">
-        <tr><th>Pro</th><th>Con</th></tr>
-        <tr><td>Zero abstraction</td><td>Logic duplicated</td></tr>
-        ...
-      </table>
-      <dl class="metrics">
-        <dt>Bundle</dt><dd>+0kb</dd>
-        <dt>Reuse</dt><dd>low</dd>
-      </dl>
-    </article>
-    <article>...02...</article>
-    <article>...03...</article>
-  </section>
+  <section>
+    <p class="eyebrow">01 — Options <span class="src">exploration-and-planning.md</span></p>
+    <h2>Option matrix</h2>
 
-  <footer>
-    <h2>Recommendation</h2>
-    <p>Go with 02 — here's why...</p>
-  </footer>
+    <div class="card">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th></th>
+            <th><p class="eyebrow">Option A</p><span class="opt">Inline useEffect</span></th>
+            <th class="pick"><p class="eyebrow">Option B · Recommended</p>
+                <span class="opt">useDebounce hook</span></th>
+            <th><p class="eyebrow">Option C</p><span class="opt">Debounce server-side</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- hero row: the number, then a rail so the gap is a shape first -->
+          <tr>
+            <th>Bundle</th>
+            <td class="cell"><span class="v">0<span> kb</span></span>
+                <span class="rail"><i style="width:4%"></i></span></td>
+            <td class="cell pick"><span class="v">0.4<span> kb</span></span>
+                <span class="rail"><i style="width:18%"></i></span></td>
+            <td class="cell"><span class="v">0<span> kb</span></span>
+                <span class="rail"><i style="width:4%"></i></span></td>
+          </tr>
+          <tr>
+            <th>Trade</th>
+            <td><ul><li class="y">Zero abstraction</li><li class="n">Logic duplicated</li></ul></td>
+            <td class="pick"><ul><li class="y">One caller, one line</li>
+                <li class="n">A hook to maintain</li></ul></td>
+            <td><ul><li class="y">No client change</li>
+                <li class="n">A round trip per keystroke</li></ul></td>
+          </tr>
+          <tr><th>Risk</th>
+              <td><span class="tag low">Low</span></td>
+              <td class="pick"><span class="tag med">Medium</span></td>
+              <td><span class="tag high">High</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="decision">
+      <p class="eyebrow">Decision</p>
+      <p>Go with B — here's why…</p>
+    </div>
+  </section>
 </main>
 ```

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design reference — Geist house style</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   Design system: Geist (Vercel) — see design.md
+   This file is the rendered reference for the house style. Copy its
+   token block and patterns rather than re-deriving them.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  /* colors — brand & accent */
+  --ink:#171717; --primary:#171717; --on-primary:#ffffff;
+  --link:#0070f3; --link-deep:#0761d1; --link-soft:#d3e5ff;
+  --violet:#7928ca; --cyan:#50e3c2; --pink:#ff0080; --magenta:#eb367f;
+  /* colors — surface */
+  --canvas:#fafafa; --canvas-elevated:#ffffff; --hairline-soft:#f2f2f2;
+  /* colors — text ladder */
+  --body:#4d4d4d; --mute:#8f8f8f; --faint:#a1a1a1;
+  /* colors — border */
+  --hairline:#ebebeb;
+  /* colors — semantic */
+  --error:#ee0000; --error-deep:#c50000;
+  --warning:#f5a623; --warning-soft:#fdf3e5; --warning-deep:#b06c08;
+  /* colors — brand gradient trio */
+  --gradient-develop-start:#007cf0; --gradient-develop-end:#00dfd8;
+  --gradient-preview-start:#7928ca; --gradient-preview-end:#ff0080;
+  --gradient-ship-start:#ff4d4d;    --gradient-ship-end:#f9cb28;
+  /* type */
+  --sans:Geist,"Geist Sans",Inter,ui-sans-serif,system-ui,-apple-system,Arial,sans-serif;
+  --mono:"Geist Mono","JetBrains Mono","IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  /* spacing — 4px base */
+  --xxs:4px; --xs:8px; --sm:12px; --md:16px; --lg:24px; --xl:32px;
+  --2xl:40px; --3xl:64px; --4xl:96px; --section:128px;
+  /* radius */
+  --r-sm:6px; --r-md:12px; --r-lg:16px; --r-pill-category:64px; --r-pill:100px; --r-full:9999px;
+  /* layout */
+  --container:1180px; --rail:13.5rem;
+  /* elevation */
+  --whisper:0px 1px 1px rgba(0,0,0,.04);
+  --floating:0px 2px 2px rgba(0,0,0,.04),0px 8px 16px -4px rgba(0,0,0,.06);
+}
+/* Dark scheme is NOT specified in design.md — minimal derivation that keeps the
+   ink/canvas/hairline ladder and the same accent set. */
+@media (prefers-color-scheme:dark){:root{
+  --ink:#ededed; --primary:#ededed; --on-primary:#0a0a0a;
+  --canvas:#0a0a0a; --canvas-elevated:#111111; --hairline-soft:#161616;
+  --body:#a1a1a1; --mute:#8f8f8f; --faint:#6f6f6f;
+  --hairline:#262626;
+  --link:#3291ff; --link-soft:#10233f;
+  --error:#f33; --warning:#f5a623;
+  --whisper:0px 1px 1px rgba(0,0,0,.35);
+  --floating:0px 2px 2px rgba(0,0,0,.4),0px 8px 16px -4px rgba(0,0,0,.5);
+}}
+*{box-sizing:border-box}
+html{background:var(--canvas);color:var(--ink)}
+body{margin:0;font:400 14px/20px var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+
+/* ── type tokens ─────────────────────────── */
+h1{font:600 48px/48px var(--sans);letter-spacing:-2.4px;margin:0}
+h2{font:600 32px/40px var(--sans);letter-spacing:-1.28px;margin:0}
+h3{font:600 20px/28px var(--sans);letter-spacing:-.4px;margin:0}
+.mono-token{font-family:var(--mono);font-weight:500;font-size:.8em;letter-spacing:-1.2px}
+.eyebrow{font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--mute);margin:0}
+.label-sm{font:500 14px/20px var(--sans);letter-spacing:-.28px}
+code{font:400 14px/20px var(--mono)}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── shell: 02's chassis, Geist chrome ───── */
+.shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);max-width:var(--container);margin:0 auto}
+main{min-width:0;border-left:1px solid var(--hairline)}
+.pad{padding:0 var(--xl)}
+.measure{max-width:58rem}
+
+/* ── the contents rail ───────────────────── */
+nav.rail{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding:var(--lg) var(--md) var(--xl) 0}
+.wordmark{display:block;font:500 14px/20px var(--sans);letter-spacing:-.28px;color:var(--ink);margin-bottom:var(--lg)}
+nav.rail ol{list-style:none;margin:0 0 var(--lg);padding:0}
+nav.rail li+li{margin-top:2px}
+nav.rail a{display:grid;grid-template-columns:1.75rem 1fr;gap:var(--xxs);align-items:baseline;
+  padding:var(--xs) var(--sm);border-radius:var(--r-sm);color:var(--body);font:400 14px/20px var(--sans)}
+nav.rail a .n{font:500 12px/16px var(--mono);color:var(--faint)}
+nav.rail a:hover{background:var(--hairline-soft);color:var(--ink);text-decoration:none}
+nav.rail a.on{background:var(--hairline-soft);color:var(--ink)}
+nav.rail a.on .n{color:var(--link)}
+nav.rail dl{display:grid;grid-template-columns:auto 1fr;gap:var(--xs) var(--sm);margin:0 0 var(--lg);
+  padding-top:var(--md);border-top:1px solid var(--hairline)}
+nav.rail dt{font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--faint);align-self:center}
+nav.rail dd{margin:0;text-align:right;font:500 14px/20px var(--sans);letter-spacing:-.28px;color:var(--body)}
+nav.rail dd.ink{color:var(--ink)} nav.rail dd.link{color:var(--link)}
+.rail-actions{display:grid;gap:var(--xs)}
+
+/* ── buttons: two shapes by context ──────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
+.btn-primary{background:var(--primary);color:var(--on-primary);font:500 16px/20px var(--sans);border-radius:var(--r-pill);padding:0 var(--md);height:44px}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{background:var(--canvas-elevated);color:var(--ink);border:1px solid var(--hairline);font:500 16px/20px var(--sans);border-radius:var(--r-pill);padding:0 var(--md);height:44px}
+.btn-secondary:hover{border-color:var(--ink)}
+.btn-primary-sm{background:var(--primary);color:var(--on-primary);font:500 14px/20px var(--sans);border-radius:var(--r-sm);padding:0 10px;height:32px}
+.btn-ghost-sm{background:var(--canvas-elevated);color:var(--ink);border:1px solid var(--hairline);font:500 14px/20px var(--sans);border-radius:var(--r-sm);padding:0 10px;height:32px}
+.btn-ghost-sm:hover{border-color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ── masthead: the one gradient, held quiet ── */
+.masthead{position:relative;overflow:hidden;border-bottom:1px solid var(--hairline);padding:var(--3xl) var(--xl) var(--xl)}
+.mesh{position:absolute;top:-70%;right:-6%;width:56%;height:230%;pointer-events:none;
+  filter:blur(72px);opacity:.34;
+  background:
+    radial-gradient(38% 46% at 16% 26%, var(--cyan) 0%, transparent 70%),
+    radial-gradient(34% 42% at 36% 8%,  var(--gradient-develop-start) 0%, transparent 72%),
+    radial-gradient(36% 48% at 58% 30%, var(--violet) 0%, transparent 70%),
+    radial-gradient(30% 40% at 78% 12%, var(--magenta) 0%, transparent 72%),
+    radial-gradient(34% 42% at 96% 36%, var(--gradient-ship-end) 0%, transparent 74%);
+}
+@media (prefers-color-scheme:dark){.mesh{opacity:.24}}
+.masthead .inner{position:relative}
+.masthead .eyebrow{margin-bottom:var(--lg)}
+.masthead h1{max-width:26ch;margin-bottom:var(--lg);text-wrap:balance}
+.headgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:var(--2xl);align-items:start}
+.dek{font:400 16px/24px var(--sans);color:var(--body);margin:0;max-width:58ch}
+.dek b{color:var(--ink);font-weight:500}
+.verdict{background:var(--canvas-elevated);border:1px solid var(--hairline);border-radius:var(--r-md);
+  padding:var(--lg);box-shadow:var(--whisper)}
+.verdict .eyebrow{color:var(--link);margin-bottom:var(--xs)}
+.verdict h3{margin-bottom:var(--md)}
+.verdict .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sm);
+  padding-top:var(--md);border-top:1px solid var(--hairline)}
+.verdict .facts .v{display:block;font:600 20px/28px var(--sans);letter-spacing:-.4px;color:var(--ink)}
+.verdict .facts .k{display:block;font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--faint);margin-top:2px}
+
+/* ── sections ────────────────────────────── */
+section{padding:var(--3xl) var(--xl);border-bottom:1px solid var(--hairline)}
+.shead{margin-bottom:var(--lg)}
+.shead .eyebrow{margin-bottom:var(--sm);display:flex;flex-wrap:wrap;gap:var(--md)}
+.shead .eyebrow .src{color:var(--faint)}
+.shead h2{max-width:24ch}
+.intro{font:400 16px/24px var(--sans);color:var(--body);margin:0 0 var(--xl);max-width:72ch}
+.intro b{color:var(--ink);font-weight:500}
+.intro code{font-size:14px;background:var(--hairline-soft);border-radius:var(--r-sm);padding:1px 5px}
+
+/* ── card ────────────────────────────────── */
+.card{background:var(--canvas-elevated);border:1px solid var(--hairline);border-radius:var(--r-md)}
+.card.inset{padding:var(--lg)}
+.card.whisper{box-shadow:var(--whisper)}
+
+/* ── matrix with rails ───────────────────── */
+.matrix-wrap{overflow:hidden}
+.matrix{width:100%;border-collapse:collapse;font:400 14px/20px var(--sans)}
+.matrix th,.matrix td{padding:var(--md);text-align:left;vertical-align:top;border-bottom:1px solid var(--hairline)}
+.matrix tbody tr:last-child td,.matrix tbody tr:last-child th{border-bottom:0}
+.matrix thead th{vertical-align:bottom}
+.matrix thead th .opt{display:block;font:600 20px/28px var(--sans);letter-spacing:-.4px;color:var(--ink);margin-top:var(--xs)}
+.matrix thead th .eyebrow{margin:0}
+.matrix tbody th{width:9rem;font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.matrix .pick{background:var(--hairline-soft)}
+.matrix thead th.pick .eyebrow{color:var(--link)}
+.matrix td{color:var(--body)}
+.cell .v{display:block;font:600 32px/40px var(--sans);letter-spacing:-1.28px;color:var(--ink)}
+.cell .v span{font:500 14px/20px var(--sans);letter-spacing:-.28px;color:var(--mute)}
+.cell .rail{display:block;height:3px;background:var(--hairline);margin:var(--xs) 0;overflow:hidden}
+.cell .rail i{display:block;height:100%;background:var(--mute)}
+.cell.pick .rail i{background:var(--ink)}
+.cell .sub{display:block;font:400 12px/16px var(--mono);color:var(--faint)}
+.matrix ul{margin:0;padding:0;list-style:none}
+.matrix li{display:grid;grid-template-columns:14px 1fr;gap:var(--xs);margin-bottom:var(--xxs)}
+.matrix li:last-child{margin-bottom:0}
+.matrix li::before{font:400 14px/20px var(--mono)}
+.matrix li.y::before{content:"+";color:var(--link)}
+.matrix li.n::before{content:"–";color:var(--error)}
+.tag{display:inline-flex;align-items:center;height:20px;padding:0 var(--xs);border-radius:var(--r-sm);font:500 12px/16px var(--mono);text-transform:uppercase}
+.tag.low{background:var(--hairline-soft);color:var(--body)}
+.tag.med{background:var(--warning-soft);color:var(--warning-deep)}
+.tag.high,.tag.blocking{background:rgba(238,0,0,.08);color:var(--error)}
+.tag.nit{background:var(--warning-soft);color:var(--warning-deep)}
+.tag.question{background:var(--link-soft);color:var(--link-deep)}
+@media (prefers-color-scheme:dark){
+  .tag.med,.tag.nit{background:rgba(245,166,35,.12);color:var(--warning)}
+  .tag.question{background:rgba(50,145,255,.14);color:var(--link)}
+}
+.decision{margin-top:var(--xl);display:flex;gap:var(--md);align-items:flex-start}
+.decision .eyebrow{color:var(--link);flex:0 0 auto;padding-top:2px}
+.decision p{font:400 16px/24px var(--sans);color:var(--ink);margin:0;max-width:70ch}
+
+/* ── figure ──────────────────────────────── */
+.figrow{display:grid;grid-template-columns:minmax(0,1fr) 17rem;gap:var(--lg);align-items:start}
+svg.flow{display:block;width:100%;height:auto}
+.n-box{fill:var(--canvas-elevated);stroke:var(--hairline);stroke-width:1}
+.n-box.hot{stroke:var(--ink);stroke-width:1.5}
+.n-lab{font:500 13px var(--sans);fill:var(--ink)}
+.n-sub{font:11px var(--mono);fill:var(--faint)}
+.edge{stroke:var(--mute);stroke-width:1;fill:none}
+.edge.hot{stroke:var(--ink);stroke-width:1.5}
+.edge.back{stroke:var(--link);stroke-dasharray:4 4;stroke-width:1.5}
+.elab{font:11px var(--mono);fill:var(--faint);text-transform:uppercase}
+.controlbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--md);margin-top:var(--md);padding-top:var(--md);border-top:1px solid var(--hairline)}
+.controlbar label{display:flex;align-items:center;gap:var(--sm);font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--mute)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:11rem;height:20px;background:transparent;outline:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--hairline)}
+input[type=range]::-moz-range-track{height:3px;background:var(--hairline)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:var(--r-full);background:var(--canvas-elevated);border:1px solid var(--hairline);box-shadow:var(--whisper);margin-top:-7px;cursor:grab}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:var(--r-full);background:var(--canvas-elevated);border:1px solid var(--hairline);cursor:grab}
+input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--link);box-shadow:0 0 0 3px var(--link-soft)}
+.readout{margin-left:auto;display:flex;gap:var(--lg)}
+.readout div{text-align:right}
+.readout .v{display:block;font:600 20px/28px var(--sans);letter-spacing:-.4px;color:var(--ink)}
+.readout .v.alert{color:var(--error)}
+.readout .k{display:block;font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--faint)}
+figcaption{font:400 12px/16px var(--sans);color:var(--mute);margin-top:var(--sm)}
+.sidecard .eyebrow{margin-bottom:var(--sm)}
+.sidecard p{font:400 14px/20px var(--sans);color:var(--body);margin:0 0 var(--md)}
+.sidecard dl{display:grid;grid-template-columns:auto 1fr;gap:var(--xs) var(--sm);margin:0;padding-top:var(--md);border-top:1px solid var(--hairline)}
+.sidecard dt{font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--faint);align-self:center}
+.sidecard dd{margin:0;text-align:right;font:500 14px/20px var(--sans);letter-spacing:-.28px;color:var(--ink)}
+.sidecard dd.alert{color:var(--error)}
+
+/* ── diff: two panes, cross-linked ───────── */
+.codebar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--md);padding:var(--sm) var(--md);border-bottom:1px solid var(--hairline);font:400 12px/16px var(--mono);color:var(--mute)}
+.codebar .file{color:var(--ink)}
+.codebar .plus{color:var(--link)} .codebar .minus{color:var(--error)}
+.codebar .right{margin-left:auto}
+.diffgrid{display:grid;grid-template-columns:minmax(0,1fr) 19rem}
+.diff{font:400 14px/20px var(--mono);overflow-x:auto;border-right:1px solid var(--hairline);padding:var(--sm) 0}
+.diff .l{display:flex;white-space:pre;padding-right:var(--md)}
+.diff .g{flex:0 0 3rem;text-align:right;padding-right:var(--md);color:var(--faint);user-select:none;font-size:12px}
+.diff .add{background:rgba(0,112,243,.05)} .diff .add .g{color:var(--link)}
+.diff .del{background:rgba(238,0,0,.045);color:var(--mute)} .diff .del .g{color:var(--error)}
+.diff .l.on{background:var(--hairline-soft);box-shadow:inset 2px 0 0 var(--link)}
+.pin{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:var(--r-full);font:500 11px/1 var(--sans);color:#fff;vertical-align:middle;margin-left:var(--sm);cursor:pointer}
+.pin.b{background:var(--error)} .pin.w{background:var(--warning);color:#3d2a05} .pin.q{background:var(--link)}
+.notes{list-style:none;margin:0;padding:0;background:var(--hairline-soft)}
+.notes li{padding:var(--md);border-bottom:1px solid var(--hairline);cursor:pointer;display:grid;grid-template-columns:18px 1fr;gap:var(--sm)}
+.notes li:last-child{border-bottom:0}
+.notes li:hover{background:var(--canvas-elevated)}
+.notes li.on{background:var(--canvas-elevated);box-shadow:inset 2px 0 0 var(--link)}
+.notes .pin{margin:0;margin-top:1px}
+.notes .hd{display:flex;flex-wrap:wrap;align-items:center;gap:var(--xs);margin-bottom:var(--xs)}
+.notes .hd .t{font:500 14px/20px var(--sans);letter-spacing:-.28px;color:var(--ink)}
+.notes p{margin:0;font:400 14px/20px var(--sans);color:var(--body)}
+.notes li.on .hd .t{color:var(--link)}
+
+/* ── incident ────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);margin-bottom:var(--xl)}
+.stats div{padding:var(--md) 0 var(--md) var(--md);border-left:1px solid var(--hairline)}
+.stats div:first-child{border-left:0;padding-left:0}
+.stats .v{display:block;font:600 32px/40px var(--sans);letter-spacing:-1.28px;color:var(--ink)}
+.stats .v.alert{color:var(--error)}
+.stats .k{display:block;font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--faint);margin-top:var(--xxs)}
+.tl{width:100%;border-collapse:collapse}
+.tl td{padding:var(--sm) var(--md) var(--sm) 0;border-bottom:1px solid var(--hairline);vertical-align:middle}
+.tl tr:last-child td{border-bottom:0}
+.tl .t{width:4.5rem;font:500 14px/20px var(--sans);letter-spacing:-.28px;color:var(--ink);white-space:nowrap}
+.tl tr.key .t{color:var(--error)}
+.tl .track{width:11rem}
+.tl .rail{display:block;height:3px;background:var(--hairline);position:relative}
+.tl .rail i{position:absolute;top:0;bottom:0;left:0;background:var(--mute)}
+.tl tr.key .rail i{background:var(--error)}
+.tl .ms{font:400 14px/20px var(--sans);color:var(--body)}
+.tl .ms b{color:var(--ink);font-weight:500}
+.tl .d{width:3.5rem;text-align:right;font:400 12px/16px var(--mono);color:var(--faint);padding-right:0}
+.gaprow td{padding:var(--xxs) 0 var(--sm)}
+.gaprow .bar{display:block;height:3px;background:repeating-linear-gradient(90deg,var(--error) 0 3px,transparent 3px 7px)}
+.gaprow .txt{display:block;font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--error);margin-top:var(--xxs)}
+.wsplit{display:grid;grid-template-columns:1fr 1fr;gap:var(--lg);margin-top:var(--xl)}
+.wsplit .eyebrow{margin-bottom:var(--xs)}
+.wsplit .good .eyebrow{color:var(--link)}
+.wsplit .poor .eyebrow{color:var(--error)}
+.wsplit p{margin:0;font:400 14px/20px var(--sans);color:var(--body)}
+
+/* ── cta-band + footer ───────────────────── */
+.cta-band{padding:var(--4xl) var(--xl);border-bottom:1px solid var(--hairline);text-align:center}
+.cta-band h2{max-width:24ch;margin:0 auto var(--md)}
+.cta-band p{font:400 16px/24px var(--sans);color:var(--body);max-width:52ch;margin:0 auto var(--xl)}
+.cta-band .row{display:flex;flex-wrap:wrap;gap:var(--sm);justify-content:center}
+.cta-band .counts{display:block;font:500 12px/16px var(--mono);text-transform:uppercase;color:var(--faint);margin-top:var(--lg)}
+footer{padding:var(--3xl) var(--xl)}
+footer .eyebrow{margin-bottom:var(--sm)}
+footer p{font:400 14px/20px var(--sans);color:var(--body);margin:0 0 var(--md);max-width:76ch}
+footer p:last-child{margin-bottom:0}
+footer p b{color:var(--ink);font-weight:500}
+
+@media (max-width:1024px){
+  h1{font-size:40px;line-height:42px;letter-spacing:-1.8px}
+  .figrow{grid-template-columns:1fr}
+  .diffgrid{grid-template-columns:1fr}
+  .diff{border-right:0;border-bottom:1px solid var(--hairline)}
+}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  main{border-left:0}
+  nav.rail{position:static;max-height:none;padding:var(--md) var(--lg);border-bottom:1px solid var(--hairline)}
+  nav.rail ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:2px}
+  nav.rail li+li{margin-top:0}
+  .rail-actions{grid-template-columns:1fr 1fr}
+  .headgrid{grid-template-columns:1fr}
+  h1{font-size:32px;line-height:36px;letter-spacing:-1.4px}
+  h2{font-size:24px;line-height:30px;letter-spacing:-.9px}
+  .masthead,section,.cta-band,footer{padding-left:var(--lg);padding-right:var(--lg)}
+  .wsplit{grid-template-columns:1fr}
+  .matrix,.matrix tbody,.matrix tr,.matrix th,.matrix td{display:block;width:auto}
+  .matrix thead{display:none}
+  .matrix tbody th{border-bottom:0;padding-bottom:var(--xxs)}
+  .tl .track{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- contents rail: an app surface, so its controls are 6px squares -->
+<nav class="rail">
+  <span class="wordmark">platform</span>
+  <ol>
+    <li><a class="on" href="#s1"><span class="n">01</span>Option matrix</a></li>
+    <li><a href="#s2"><span class="n">02</span>Request path</a></li>
+    <li><a href="#s3"><span class="n">03</span>Prototype review</a></li>
+    <li><a href="#s4"><span class="n">04</span>Incident 2291</a></li>
+  </ol>
+  <dl>
+    <dt>Status</dt><dd>Draft</dd>
+    <dt>Owner</dt><dd>platform</dd>
+    <dt>Updated</dt><dd>2026-08-19</dd>
+    <dt>Decision</dt><dd class="link">Option B</dd>
+    <dt>Blockers</dt><dd class="ink">2</dd>
+  </dl>
+  <div class="rail-actions">
+    <button class="btn btn-primary-sm" id="copy-md-top">Copy as markdown</button>
+    <button class="btn btn-ghost-sm" id="copy-prompt-top">Copy as prompt</button>
+  </div>
+</nav>
+
+<main>
+
+  <header class="masthead">
+    <div class="mesh" aria-hidden="true"></div>
+    <div class="inner">
+      <p class="eyebrow">Design reference · Geist house style</p>
+      <h1>Streaming responses for <span class="mono-token">/chat</span></h1>
+      <div class="headgrid">
+        <p class="dek">The endpoint holds the connection until the model finishes, then returns one JSON blob — eleven seconds of spinner for a 600-token answer. Three implementations are viable. <b>Server-Sent Events is the recommendation:</b> first token in 90 ms without the connection lifecycle a WebSocket would force us to own. Two blocking review notes stand between the prototype and a mergeable PR.</p>
+        <div class="verdict">
+          <p class="eyebrow">The call</p>
+          <h3>Server-Sent Events</h3>
+          <div class="facts">
+            <div><span class="v">90 ms</span><span class="k">First token</span></div>
+            <div><span class="v">4 d</span><span class="k">Effort</span></div>
+            <div><span class="v">2</span><span class="k">Blockers</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="s1">
+    <div class="shead">
+      <p class="eyebrow"><span>01 — Options</span><span class="src">exploration-and-planning.md</span></p>
+      <h2>Option matrix</h2>
+    </div>
+    <p class="intro">Criteria down the side, options across the top. Each number carries a rail underneath, so the size of the gap is legible before the digits are. The recommendation takes the faintest grey fill and an accent-blue eyebrow — nothing is inverted, nothing shouts.</p>
+    <div class="card matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th></th>
+            <th><p class="eyebrow">Option A</p><span class="opt">Poll for completion</span></th>
+            <th class="pick"><p class="eyebrow">Option B · Recommended</p><span class="opt">Server-Sent Events</span></th>
+            <th><p class="eyebrow">Option C</p><span class="opt">WebSocket duplex</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>p50 first token</th>
+            <td class="cell"><span class="v">420<span> ms</span></span><span class="rail"><i style="width:100%"></i></span><span class="sub">4.7× the target</span></td>
+            <td class="cell pick"><span class="v">90<span> ms</span></span><span class="rail"><i style="width:21%"></i></span><span class="sub">meets target</span></td>
+            <td class="cell"><span class="v">85<span> ms</span></span><span class="rail"><i style="width:20%"></i></span><span class="sub">meets target</span></td>
+          </tr>
+          <tr>
+            <th>Mechanism</th>
+            <td>Client re-requests the message every 400 ms until it stops changing.</td>
+            <td class="pick">One long-lived GET; the server pushes <code>data:</code> frames as tokens arrive.</td>
+            <td>A persistent socket carries tokens down and interrupts up.</td>
+          </tr>
+          <tr>
+            <th>Trade</th>
+            <td><ul><li class="y">No server change at all</li><li class="y">Every response is a normal cacheable GET</li><li class="n">400 ms floor on perceived latency</li><li class="n">Six times the request volume at peak</li></ul></td>
+            <td class="pick"><ul><li class="y">Browser reconnects on its own</li><li class="y">Passes through the proxies we already run</li><li class="n">One direction only — cancel needs a second call</li><li class="n">Six-connection cap on HTTP/1.1</li></ul></td>
+            <td><ul><li class="y">Cancel and interrupt come for free</li><li class="y">Room for typing state and presence later</li><li class="n">A connection lifecycle we have to own</li><li class="n">Sticky sessions at the load balancer</li></ul></td>
+          </tr>
+          <tr>
+            <th>Effort</th>
+            <td class="cell"><span class="v">1<span> day</span></span><span class="rail"><i style="width:11%"></i></span></td>
+            <td class="cell pick"><span class="v">4<span> days</span></span><span class="rail"><i style="width:44%"></i></span></td>
+            <td class="cell"><span class="v">9<span> days</span></span><span class="rail"><i style="width:100%"></i></span></td>
+          </tr>
+          <tr><th>Server change</th><td>None</td><td class="pick">Moderate</td><td>Large</td></tr>
+          <tr><th>Infra risk</th><td><span class="tag low">Low</span></td><td class="pick"><span class="tag med">Medium</span></td><td><span class="tag high">High</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="decision">
+      <p class="eyebrow">Decision</p>
+      <p>Take B. The 5 ms it gives up to WebSockets is noise next to the two weeks of load-balancer work C needs, and cancel-by-second-call is a fine trade until interrupts are a real feature rather than a nice-to-have.</p>
+    </div>
+  </section>
+
+  <section id="s2">
+    <div class="shead">
+      <p class="eyebrow"><span>02 — Request path</span><span class="src">diagrams-and-illustrations.md</span></p>
+      <h2>Request path</h2>
+    </div>
+    <p class="intro">The dashed blue return is the token stream — the one edge that stays open for the life of the response, and the only one that has to survive a proxy.</p>
+    <div class="figrow">
+      <figure class="card inset" style="margin:0">
+        <svg class="flow" viewBox="0 0 720 190" role="img" aria-label="Request path from client through edge, auth and handler to the model, with a token stream returning to the client">
+          <defs>
+            <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--mute)"/></marker>
+            <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker>
+            <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--link)"/></marker>
+          </defs>
+          <g><rect class="n-box" x="10" y="40" width="100" height="44" rx="6"/><text class="n-lab" x="60" y="61" text-anchor="middle">client</text><text class="n-sub" x="60" y="76" text-anchor="middle">browser</text></g>
+          <g><rect class="n-box" x="160" y="40" width="100" height="44" rx="6"/><text class="n-lab" x="210" y="61" text-anchor="middle">edge</text><text class="n-sub" x="210" y="76" text-anchor="middle">nginx</text></g>
+          <g><rect class="n-box" x="310" y="40" width="100" height="44" rx="6"/><text class="n-lab" x="360" y="61" text-anchor="middle">auth</text><text class="n-sub" x="360" y="76" text-anchor="middle">jwt · 4ms</text></g>
+          <g><rect class="n-box hot" x="460" y="40" width="100" height="44" rx="6"/><text class="n-lab" x="510" y="61" text-anchor="middle">handler</text><text class="n-sub" x="510" y="76" text-anchor="middle">chat@1.9</text></g>
+          <g><rect class="n-box" x="610" y="40" width="100" height="44" rx="6"/><text class="n-lab" x="660" y="61" text-anchor="middle">model</text><text class="n-sub" x="660" y="76" text-anchor="middle">inference</text></g>
+          <line class="edge" x1="110" y1="62" x2="152" y2="62" marker-end="url(#a1)"/>
+          <line class="edge" x1="260" y1="62" x2="302" y2="62" marker-end="url(#a1)"/>
+          <line class="edge" x1="410" y1="62" x2="452" y2="62" marker-end="url(#a1)"/>
+          <line class="edge hot" x1="560" y1="62" x2="602" y2="62" marker-end="url(#a2)"/>
+          <path class="edge back" d="M655 84 L655 116 L65 116 L65 88" marker-end="url(#a3)"/>
+          <text class="elab" x="360" y="110" text-anchor="middle" fill="var(--link)">token frames · text/event-stream</text>
+          <text class="elab" x="10" y="148">open streams on handler</text>
+          <rect x="10" y="154" width="700" height="8" fill="var(--hairline)"/>
+          <rect id="loadbar" x="10" y="154" width="130" height="8" fill="var(--ink)"/>
+          <line x1="490" y1="150" x2="490" y2="170" stroke="var(--error)" stroke-width="1"/>
+          <text class="elab" x="496" y="181" fill="var(--error)">fd budget</text>
+        </svg>
+        <div class="controlbar">
+          <label>Concurrent streams <input type="range" id="streams" min="1" max="64" value="12"></label>
+          <span class="readout" id="readout"></span>
+        </div>
+        <figcaption>Each open stream pins one file descriptor on the handler for the life of the response.</figcaption>
+      </figure>
+      <aside class="card inset sidecard">
+        <p class="eyebrow">Why it matters</p>
+        <p>Past roughly forty-four concurrent streams the handler is inside the margin INC-2291 consumed in nine minutes. Both blocking review notes are about releasing that descriptor when the client goes away.</p>
+        <dl>
+          <dt>Budget</dt><dd>65,000 fd</dd>
+          <dt>At peak</dt><dd class="alert">61,000 fd</dd>
+          <dt>Headroom</dt><dd class="alert">6%</dd>
+          <dt>Safe ceiling</dt><dd>~44 streams</dd>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section id="s3">
+    <div class="shead">
+      <p class="eyebrow"><span>03 — Review</span><span class="src">code-review-and-pr.md</span></p>
+      <h2>Prototype review</h2>
+    </div>
+    <p class="intro">Both blockers live in <code>pipeBackpressure</code>. Click a note — or a pin — to lock onto its line.</p>
+    <div class="card matrix-wrap">
+      <div class="codebar">
+        <span class="file">src/chat/handler.ts</span>
+        <span class="plus">+14</span><span class="minus">−3</span>
+        <span class="right">4 notes · 2 blocking</span>
+      </div>
+      <div class="diffgrid">
+        <div class="diff">
+          <div class="l"><span class="g">41</span>export async function handleChat(req: Request) {</div>
+          <div class="l del"><span class="g">42</span>-  const message = await complete(req.body.prompt);</div>
+          <div class="l del"><span class="g">43</span>-  return json({ message });</div>
+          <div class="l add"><span class="g">42</span>+  const stream = await completeStream(req.body.prompt);</div>
+          <div class="l add" data-n="1"><span class="g">43</span>+  return pipeBackpressure(stream, req.signal);<span class="pin b" data-n="1">1</span></div>
+          <div class="l"><span class="g">44</span>}</div>
+          <div class="l"><span class="g">45</span> </div>
+          <div class="l add"><span class="g">46</span>+function pipeBackpressure(src: ReadableStream, signal: AbortSignal) {</div>
+          <div class="l add"><span class="g">47</span>+  const out = new TransformStream();</div>
+          <div class="l add" data-n="2"><span class="g">48</span>+  src.pipeTo(out.writable).catch(() =&gt; {});<span class="pin b" data-n="2">2</span></div>
+          <div class="l add" data-n="3"><span class="g">49</span>+  signal.addEventListener('abort', () =&gt; src.cancel());<span class="pin w" data-n="3">3</span></div>
+          <div class="l add" data-n="4"><span class="g">50</span>+  return new Response(out.readable, SSE_HEADERS);<span class="pin q" data-n="4">4</span></div>
+          <div class="l add"><span class="g">51</span>+}</div>
+        </div>
+        <ol class="notes">
+          <li data-n="1"><span class="pin b">1</span><div><div class="hd"><span class="tag blocking">Blocking</span><span class="t">Undefined <code>req.signal</code></span></div><p>Undefined on the Node adapter, so aborts never reach the model. A closed tab leaves the stream running to completion — the exact mechanism behind INC-2291.</p></div></li>
+          <li data-n="2"><span class="pin b">2</span><div><div class="hd"><span class="tag blocking">Blocking</span><span class="t">Empty catch swallows everything</span></div><p><code>.catch(() =&gt; {})</code> eats a model 429 as happily as a client disconnect. The reader sees a clean stream that stops mid-sentence, and we get no telemetry.</p></div></li>
+          <li data-n="3"><span class="pin w">3</span><div><div class="hd"><span class="tag nit">Nit</span><span class="t">Listener never removed</span></div><p>Harmless per request, but it will read as a false positive the next time the leak suite runs.</p></div></li>
+          <li data-n="4"><span class="pin q">4</span><div><div class="hd"><span class="tag question">Question</span><span class="t">Buffering header?</span></div><p>Does <code>SSE_HEADERS</code> set <code>X-Accel-Buffering: no</code>? nginx buffers 4 KB by default — about three seconds of tokens, which erases the whole benefit of Option B.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="s4">
+    <div class="shead">
+      <p class="eyebrow"><span>04 — Incident</span><span class="src">reports-and-research.md</span></p>
+      <h2>Incident INC-2291</h2>
+    </div>
+    <div class="stats">
+      <div><span class="v alert">Sev-2</span><span class="k">Severity</span></div>
+      <div><span class="v">41 min</span><span class="k">Duration</span></div>
+      <div><span class="v">18k</span><span class="k">Sessions hung</span></div>
+      <div><span class="v">None</span><span class="k">Data loss</span></div>
+      <div><span class="v alert">17 min</span><span class="k">To detect</span></div>
+    </div>
+    <table class="tl">
+      <tr><td class="t">14:02</td><td class="track"><span class="rail"><i style="width:2px"></i></span></td><td class="ms">Deploy of <b>chat@1.9.0</b> reaches 25% of the fleet.</td><td class="d">T+0</td></tr>
+      <tr><td class="t">14:07</td><td class="track"><span class="rail"><i style="width:12.2%"></i></span></td><td class="ms">p99 chat latency crosses <b>12 s</b>. No alert fires — the SLO watches the completion endpoint, not the stream.</td><td class="d">T+5</td></tr>
+      <tr class="gaprow"><td></td><td class="track"><span class="bar" style="margin-left:12.2%;width:29.3%"></span><span class="txt">Twelve silent minutes</span></td><td colspan="2"></td></tr>
+      <tr class="key"><td class="t">14:19</td><td class="track"><span class="rail"><i style="width:41.5%"></i></span></td><td class="ms">First customer report. Support pages on-call.</td><td class="d">T+17</td></tr>
+      <tr class="key"><td class="t">14:26</td><td class="track"><span class="rail"><i style="width:58.5%"></i></span></td><td class="ms">Open descriptors at <b>61k of 65k</b>. Streams stay open after the client disconnects.</td><td class="d">T+24</td></tr>
+      <tr><td class="t">14:31</td><td class="track"><span class="rail"><i style="width:70.7%"></i></span></td><td class="ms">Rollback started.</td><td class="d">T+29</td></tr>
+      <tr><td class="t">14:43</td><td class="track"><span class="rail"><i style="width:100%"></i></span></td><td class="ms">Fleet back on <b>1.8.4</b>. Latency recovered.</td><td class="d">T+41</td></tr>
+    </table>
+    <div class="wsplit">
+      <div class="good"><p class="eyebrow">What worked</p><p>The rollback path was one command and took twelve minutes end to end, including the canary check.</p></div>
+      <div class="poor"><p class="eyebrow">What didn't</p><p>Seventeen minutes between the latency cliff and the first human noticing, because nothing was watching the thing we had just changed.</p></div>
+    </div>
+  </section>
+
+  <!-- cta-band: a marketing surface, so its controls are pills -->
+  <div class="cta-band">
+    <h2>Ship Option B</h2>
+    <p>Fix the two blockers in <code>pipeBackpressure</code>, confirm the buffering header, then open the PR.</p>
+    <div class="row">
+      <button class="btn btn-primary" id="copy-md">Copy as markdown</button>
+      <button class="btn btn-secondary" id="copy-prompt">Copy as prompt</button>
+    </div>
+    <span class="counts">3 options · 4 review notes · 6 timeline events</span>
+  </div>
+
+  <footer>
+    <p class="eyebrow">Colophon</p>
+    <p>The rendered reference for the house style documented in <code>design.md</code>: #fafafa canvas under #171717 ink, 1px #ebebeb hairlines defining every card, uppercase Geist Mono eyebrows labelling each section, display type at 48/48 with −2.4px tracking, and colour confined to the mesh gradient in the masthead. Depth is a hairline plus, at most, a whisper shadow.</p>
+    <p>Patterns worth copying: the sticky <b>contents rail</b>; the <b>criteria matrix</b> with a rail under every figure and the recommendation marked by the faintest grey fill rather than an inverted block; the <b>two-pane diff</b> cross-linked to its notes; the <b>stat row</b> over a timeline; and the two button shapes by surface — 6px squares in the rail because that is an app surface, 100px pills in the CTA band because that is a marketing one. Geist Sans and Geist Mono are declared first and fall back to Inter and JetBrains Mono, so the file opens offline with no webfont fetch.</p>
+  </footer>
+
+</main>
+</div>
+
+<script>
+const MD = `# RFC-0114 — Streaming responses for /chat (rev B)
+
+Recommendation: Option B, Server-Sent Events.
+
+| | A · Poll | B · SSE (pick) | C · WebSocket |
+|---|---|---|---|
+| p50 first token | 420 ms | 90 ms | 85 ms |
+| Server change | None | Moderate | Large |
+| Infra risk | Low | Medium | High |
+| Effort | 1 day | 4 days | 9 days |
+
+Take B. The 5 ms it gives up to WebSockets is noise next to the two weeks of load-balancer work C needs.
+
+## Prototype review — src/chat/handler.ts (+14 -3)
+1. BLOCKING req.signal is undefined on the Node adapter; aborts never reach the model.
+2. BLOCKING .catch(() => {}) swallows a model 429 as happily as a client disconnect.
+3. NIT abort listener is never removed.
+4. QUESTION does SSE_HEADERS set X-Accel-Buffering: no?
+
+## INC-2291 — Sev-2, 41 min, ~18k sessions, 17 min to detect
+- 14:02 chat@1.9.0 to 25% of fleet
+- 14:07 p99 crosses 12 s, no alert
+- 14:19 first customer report
+- 14:26 61k/65k descriptors — streams held open after disconnect
+- 14:31 rollback started
+- 14:43 recovered on 1.8.4`;
+const PROMPT = "Here's RFC-0114. Implement option B (Server-Sent Events) and fix all four review notes on src/chat/handler.ts before opening the PR.\n\n" + MD;
+
+function copy(btn, text){
+  const label = btn.textContent;
+  const done = () => { btn.textContent = 'Copied'; btn.disabled = true;
+    setTimeout(() => { btn.textContent = label; btn.disabled = false; }, 1300); };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
+  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+}
+['copy-md','copy-md-top'].forEach(id => document.getElementById(id).onclick = e => copy(e.currentTarget, MD));
+['copy-prompt','copy-prompt-top'].forEach(id => document.getElementById(id).onclick = e => copy(e.currentTarget, PROMPT));
+
+const s = document.getElementById('streams'), out = document.getElementById('readout'), bar = document.getElementById('loadbar');
+function upd(){
+  const n = +s.value, ms = Math.round(85 + n * 1.35), hot = n > 44;
+  out.innerHTML = '<div><span class="v">' + n + '</span><span class="k">streams</span></div>' +
+    '<div><span class="v' + (hot ? ' alert' : '') + '">' + ms + ' ms</span><span class="k">p50 first token</span></div>';
+  bar.setAttribute('width', String(Math.round(n / 64 * 700)));
+  bar.setAttribute('fill', hot ? 'var(--error)' : 'var(--ink)');
+}
+s.addEventListener('input', upd); upd();
+
+function sel(n){
+  document.querySelectorAll('.diff .l').forEach(l => l.classList.toggle('on', l.dataset.n === n));
+  document.querySelectorAll('.notes li').forEach(l => l.classList.toggle('on', l.dataset.n === n));
+}
+document.querySelectorAll('.notes li').forEach(li => li.onclick = () => sel(li.dataset.n));
+document.querySelectorAll('.diff .pin').forEach(p => p.onclick = () => sel(p.dataset.n));
+
+/* rail marks the section you're reading */
+const links = [...document.querySelectorAll('nav.rail a')];
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); });
+}, {rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section[id]').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

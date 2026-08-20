@@ -1,123 +1,108 @@
 # Reports, Research & Explainers
 
-Recurring documents — status updates, post-mortems, deep dives — benefit most from a bit of structure and color. People read them when they're scannable; they ignore them when they're walls of text.
+Recurring documents get read when they're scannable and ignored when they're walls of text. House style: `../design.md`; token block and patterns in `matching-your-style.md`.
 
-## Concept explainer (for learning a new topic)
+## Concept explainer
 
-For "explain consistent hashing to me" or "how does our rate limiter actually work."
-
-**Layout**
-- Title, subtitle, and a *one-paragraph* TL;DR before any technical content. The reader should know what they're about to learn in 15 seconds.
-- The "trick" or the core insight, stated as a single sentence with the most important word emphasized.
-- A **live interactive demo** if the concept is the kind that benefits from manipulation (sharding, hashing, scheduling, queuing, anything geometric or stateful). Click/drag/slider that lets the reader cause the system to rearrange itself.
-- A comparison table: this approach vs. the obvious naive approach, with concrete metrics.
-- "Where you'll meet it" — real systems that use this. Grounds it in things the reader knows.
-- A glossary, ideally **in the margin** with hover-link cross-refs from terms in the body text.
-- Tabbed code samples for languages/frameworks the reader might use.
-
-**What's load-bearing**
-- The live demo. For concepts that have a spatial or stateful character, a five-second interaction beats five paragraphs of prose.
-- Marginal glossary, not a glossary at the bottom. Bottom glossaries are never read; marginal ones are scanned.
-- Comparison to the naive approach with numbers, not adjectives. "Better" is meaningless; "moves 1/N keys instead of (N-1)/N" is meaningful.
-
-**Common mistakes**
-- Treating it as a Wikipedia-style overview. The reader has a question — answer it sharp, then expand.
-- Burying the punchline. The TL;DR should give away the answer.
-- Skipping the demo because "the user can imagine it." They cannot. That's why they're reading the explainer.
-
-## Feature explainer (for understanding code in a repo)
-
-For "how does our auth flow work" or "explain rate limiting in this codebase."
+For "explain consistent hashing to me."
 
 **Layout**
-- TL;DR box at the top: what it does, where it lives, key files.
-- Collapsible sections for each phase of the request/feature lifecycle. Default-collapsed for the deep stuff, default-open for the overview.
-- Tabbed code snippets — same logic in TypeScript, in Python, in the test, in the config. Tabs save vertical space.
-- An FAQ at the bottom for the questions readers always ask after reading.
-- "Where to look next" links into the codebase.
+- Masthead with the mesh, then a one-paragraph TL;DR *before* any technical content. Give away the answer.
+- The core insight as a single sentence, set as the section `h2`.
+- A **live demo** if the concept is spatial or stateful — slider or drag that makes the system rearrange itself. Figure in a hairline card, controls in a `controlbar`, a `sidecard` beside it holding the comparison numbers.
+- A comparison against the naive approach with concrete metrics, not adjectives. "Moves 1/N keys instead of (N−1)/N" is meaningful; "better" isn't.
+- "Where you'll meet it" — real systems the reader knows.
+- Glossary in the margin, not at the bottom. Bottom glossaries are never read.
 
-**What's load-bearing**
-- Collapsibles. Code explainers are dense; let the reader expand only what they need.
-- Code with annotations, not bare code blocks. The interesting lines deserve callouts.
-- The FAQ. It's where the reader's actual questions live.
+**Avoid** a Wikipedia-style overview, burying the punchline, and skipping the demo because "the reader can imagine it." They cannot — that's why they're here.
 
-## Status report / weekly update
+## Feature explainer (code in a repo)
+
+For "how does our auth flow work."
+
+TL;DR card at the top: what it does, where it lives, key files. Collapsible sections per lifecycle phase — default-open for the overview, closed for the deep stuff. Code with annotations rather than bare blocks. An FAQ at the bottom, which is where the reader's real questions live. "Where to look next" links into the codebase.
+
+## Status report
 
 For "summarize what shipped this week."
 
-**Layout**
-- Title with the week, team, author.
-- Top section: shipped / in flight / blocked, in three visually distinct columns or rows. Color-coded.
-- Each item is one line with a link to the PR/ticket. Add a sentence of context only if the item needs explanation.
-- A small chart somewhere — even a sparkline. Recurring reports get skimmed; a chart is a thing the eye lands on.
-- "Asks": specific things the author needs from the reader. Calls to action, separated visually.
-- A footer: timestamp, "ping me with questions," contact.
+Shipped / in flight / blocked as three visually distinct groups, colour-coded. One line per item with a link — a sentence of context only if the item needs it. A `stats` row or sparkline somewhere; recurring reports get skimmed and a number is what the eye lands on. **Asks** separated visually — they get lost when intermixed with status.
 
-**What's load-bearing**
-- Brevity per item. A status report is read in 90 seconds or not at all. One line per item.
-- Color-coded status. Shipped/in flight/blocked should be distinguishable at a glance.
-- Asks separated. They get lost when intermixed with status.
+**Load-bearing:** brevity per item. A status report is read in 90 seconds or not at all.
 
-## Incident report / post-mortem
+## Incident report
 
-For "write up the outage from yesterday."
+For "write up yesterday's outage."
 
 **Layout**
-- Header: incident name, severity, total duration, customer impact in a single concise summary.
-- A **minute-by-minute timeline** as a vertical column with timestamps on one side and events on the other. This is the spine of the document.
-- Log excerpts inline at the timestamps where they matter, in a `<pre>` block, color-coded by source/severity.
-- Root cause: separate section, written for the audience that wasn't paying attention to the timeline.
-- "What worked" — what made detection/response faster than it could have been.
-- "What didn't" — what made it slower or worse.
-- Follow-up action items as a checklist with owners and deadlines. Not a wishlist; commitments.
+- Header: severity, duration, customer impact in one line. Leadership reads only this and the action items.
+- A **stat row** — severity, duration, blast radius, time to detect — over a **timeline table** with a proportional rail per row, so the pace is visible: long flat stretches, then clusters.
+- A dashed error-coloured band for any silent stretch. A twelve-minute gap should be a shape, not a sentence.
+- Root cause as its own section, written for someone who skipped the timeline.
+- "What worked" alongside "what didn't." Without the former, post-mortems become punitive.
+- Action items with owners and dates. Commitments, not a wishlist.
 
-**What's load-bearing**
-- The timeline as a real visual timeline, not a numbered list. The reader needs to see the pace — long flat stretches followed by clusters of activity.
-- Action items with owners. Without owners, follow-ups don't happen.
-- "What worked" alongside "what didn't." Post-mortems become punitive without it; they become educational with it.
-
-**Common mistakes**
-- Skipping the customer impact summary. Leadership reads only that and the action items.
-- Burying timestamps. Every timeline event needs a clock.
-
-## Example sketch — concept explainer with live demo
+## Sketch
 
 ```html
-<main class="explainer">
-  <header>
+<main class="container">
+  <header class="masthead">
+    <div class="mesh" aria-hidden="true"></div>
+    <p class="eyebrow">Explainer</p>
     <h1>Consistent hashing, in one ring</h1>
-    <p class="tldr">N caches, K keys. Add or remove a node and only ~K/N keys move
-       — instead of ~all of them with hash mod N. Here's why.</p>
+    <p class="dek">N caches, K keys. Add or remove a node and only ~K/N keys move —
+       instead of ~all of them with hash mod N. Here's why.</p>
   </header>
 
   <section>
-    <h2>The trick: hash onto a circle, not a line</h2>
-    <p>Map both nodes and keys onto the same ring...</p>
+    <p class="eyebrow">01 — The trick <span class="src">reports-and-research.md</span></p>
+    <h2>Hash onto a circle, not a line</h2>
 
-    <figure class="live-demo">
-      <svg id="ring" viewBox="0 0 400 400"><!-- ring rendered live --></svg>
-      <div class="controls">
-        <label>nodes <input type="range" id="nodes" min="2" max="12" value="4"></label>
-        <label>keys  <input type="range" id="keys"  min="8" max="64" value="32"></label>
-        <button id="remove">Remove a node</button>
-        <button id="add">Add a node</button>
-        <button id="reset">Reset</button>
-      </div>
-      <p class="readout">4 nodes · 32 keys · — moved on last change</p>
-    </figure>
+    <div class="figrow">
+      <figure class="card inset" style="margin:0">
+        <svg id="ring" class="flow" viewBox="0 0 400 400"><!-- rendered live --></svg>
+        <div class="controlbar">
+          <label>Nodes <input type="range" id="nodes" min="2" max="12" value="4"></label>
+          <span class="readout" id="readout"></span>
+        </div>
+        <figcaption>Add or remove a node and watch how little moves.</figcaption>
+      </figure>
+
+      <aside class="card inset sidecard">
+        <p class="eyebrow">Versus hash mod N</p>
+        <dl>
+          <dt>Keys moved</dt><dd>~K/N</dd>
+          <dt>Naive</dt><dd class="alert">~all</dd>
+          <dt>In the wild</dt><dd>Cassandra</dd>
+        </dl>
+      </aside>
+    </div>
   </section>
-
-  <section>
-    <h2>Versus hash mod N</h2>
-    <table class="compare">...</table>
-  </section>
-
-  <aside class="glossary">
-    <dl>
-      <dt>Ring</dt><dd>The hash output range, treated as a circle.</dd>
-      <dt>Arc</dt><dd>The stretch of ring a node owns.</dd>
-      ...
-    </dl>
-  </aside>
 </main>
+```
+
+For an incident, the spine is a stat row over a timeline — same tokens:
+
+```html
+<div class="stats">
+  <div><span class="v alert">Sev-2</span><span class="k">Severity</span></div>
+  <div><span class="v">41 min</span><span class="k">Duration</span></div>
+  <div><span class="v alert">17 min</span><span class="k">To detect</span></div>
+</div>
+
+<table class="tl">
+  <tr><td class="t">14:02</td>
+      <td class="track"><span class="rail"><i style="width:2px"></i></span></td>
+      <td class="ms">Deploy of <b>chat@1.9.0</b> reaches 25% of the fleet.</td>
+      <td class="d">T+0</td></tr>
+  <!-- a dashed error-coloured band makes a silent stretch visible -->
+  <tr class="gaprow"><td></td>
+      <td class="track"><span class="bar" style="margin-left:12%;width:29%"></span>
+          <span class="txt">Twelve silent minutes</span></td>
+      <td colspan="2"></td></tr>
+  <tr class="key"><td class="t">14:19</td>
+      <td class="track"><span class="rail"><i style="width:41.5%"></i></span></td>
+      <td class="ms">First customer report. Support pages on-call.</td>
+      <td class="d">T+17</td></tr>
+</table>
 ```

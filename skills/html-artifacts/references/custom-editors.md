@@ -1,128 +1,124 @@
 # Custom Editors
 
-The most distinctive use of the format. The user has a one-off task — triage 30 tickets, tune a regex, reorder steps in a flow, curate a dataset, pick exact easing values — and a text-box prompt is the wrong shape for it. Build a throwaway editor: a single HTML file, purpose-built for the one task, that always ends with an export button.
+The most distinctive use of the format. The user has a one-off task — triage 30 tickets, tune a regex, curate a dataset — and a chat box is the wrong shape for it. Build a throwaway editor: one HTML file, purpose-built, that always ends with an export. House style: `../design.md`; token block in `matching-your-style.md`.
 
 ## The non-negotiable rule
 
-**Every editor must end with an export.** "Copy as markdown," "copy as JSON," "copy as prompt," "download as CSV" — whatever turns the UI state into something the user can paste back into Claude Code, into a commit, into a Linear comment, into the next prompt. Without the export, the editor is a toy. With it, the editor closes the loop and the user stays in control.
+**Every editor ends with an export.** Copy as markdown, copy as JSON, copy as prompt, download CSV — whatever turns UI state into something pasteable into a commit, a ticket, or the next prompt. Without it the editor is a toy; with it the loop closes and the user stays in control.
 
-If you find yourself making an editor without an export path, stop. Add the export *first*, then build the rest.
+If you're building one without an export path, stop and add the export first.
 
-## When to build a custom editor
+## When to build one
 
-The signal: the user is trying to express something that's hard to type in a chat.
-
-- Reordering / triaging / bucketing many items (tickets, test cases, support emails, todos).
-- Editing structured config with constraints (feature flags, env vars, JSON/YAML where some keys depend on others).
-- Tuning prompts or templates with live preview against sample inputs.
-- Curating a dataset: approve/reject, tag, label.
-- Annotating something: a transcript, a diff, a screenshot.
-- Picking values that are painful to express in text: colors, easing curves, crop regions, cron schedules, regex with live test strings.
-
-If the task is one-off and the input is structured, this pattern fits.
+The signal: the user is trying to express something that's hard to type. Reordering or bucketing many items. Structured config with constraints. Tuning a prompt with live preview. Curating a dataset — approve/reject/tag. Annotating a transcript or diff. Picking values that are painful in text: colours, easing curves, crop regions, cron schedules, regex with live test strings.
 
 ## Layout
 
-- The work area is the dominant focus. Header, controls, and export sit around it.
-- A short header: what this editor is for, in one sentence.
-- The pre-loaded data (if any) ready to manipulate. Don't make the user paste their own input — accept it as part of the prompt and have it pre-filled.
-- The interaction primitives appropriate to the data: drag-and-drop for ordering, toggles for booleans, selects for enums, sliders for ranges, text inputs for strings.
-- A live "current state" indicator: how many items in each bucket, character count, validation errors visible immediately.
-- The export bar at the bottom: one or more buttons that produce the user's chosen output format. Often: "Copy as markdown" + "Copy as JSON" + "Reset."
-- Optional: an undo/redo stack. Worth it for editors with many small actions.
+An editor is an **app surface**, so the chrome is 6px squares throughout and the pill is reserved for the single terminal export.
 
-## What's load-bearing
+- The work area dominates. A contents rail or toolbar holds counts and controls around it.
+- One sentence of header saying what this editor is for.
+- **Pre-loaded data.** The user already gave you it in the prompt — don't make them paste it twice.
+- Interaction primitives matched to the data: drag-and-drop for ordering, toggles for booleans, selects for enums, sliders for ranges.
+- A live state indicator — counts per bucket, character count, validation errors — visible immediately.
+- Constraints shown at the moment of conflict, as a `tag`, not as a footer disclaimer.
+- Keyboard support for anything repetitive. Labelling 100 examples needs `j`/`k` or `1`/`2`/`3`, not clicks.
+- Keep the 14px body and hairline cards; drop the 48px display type. Density comes from removing padding, never from type below 14px.
+- `localStorage` is fine and worth it for a local `.html` file; in-memory only for Claude.ai artifacts.
 
-- **The export, again.** Without it, nothing else matters.
-- **Pre-filled data.** The user already gave you the data in the prompt. Don't make them type it twice.
-- **Constraints visible.** If toggling flag A requires flag B, show the warning at the moment of the conflict, not as a footer disclaimer.
-- **State persistence within the session.** If the user accidentally refreshes, they shouldn't lose 30 minutes of triage. (For Claude.ai artifacts: in-memory only, no localStorage. For Claude Code .html files saved locally: localStorage is fine and worth using.)
-- **Keyboard support for repetitive actions.** If the user is going to label 100 examples, they need `j`/`k` or `1`/`2`/`3`, not just clicks.
+## Avoid
 
-## Common mistakes
+- **Making it generic.** This is a throwaway tool for *this* task — the triage board for cycle 14's 24 tickets, not a task management system.
+- **Skipping the export.** The most common failure mode, worth repeating.
+- **Adding settings.** Settings are for products.
+- **Server-style state.** No backend, no auth, everything in one file.
+- **Pretty over usable.** Judged by whether the user finishes and leaves.
 
-- **Making it generic.** This is a *throwaway* tool for *this* task. Don't build a "task management system" — build the triage board for *cycle 14's* 24 specific tickets.
-- **Skipping the export.** Already mentioned. Skipping it again because it's the most common failure mode.
-- **Adding settings.** Settings are for products. This isn't a product, it's a tool.
-- **Server-style state.** No backend, no API, no auth. Everything in one file, everything in memory.
-- **Pretty over usable.** A custom editor is judged by whether the user can finish their task and leave. Make it fast and direct.
+## Sketches
 
-## Three example shapes
+Triage board — drag across buckets, export one heading per bucket. The only CSS beyond the token block:
 
-### Triage board
-
-Drag tickets across columns (Now / Next / Later / Cut), pre-sorted. Export = markdown with one bucket per heading and a one-line rationale per ticket.
-
-```html
-<main>
-  <header>
-    <h1>Cycle 14 triage</h1>
-    <p>24 tickets, pre-sorted into a best guess. Drag until the cut feels right,
-       then copy out as markdown.</p>
-  </header>
-
-  <div class="board">
-    <section class="col" data-bucket="now"><h2>Now</h2><ul></ul></section>
-    <section class="col" data-bucket="next"><h2>Next</h2><ul></ul></section>
-    <section class="col" data-bucket="later"><h2>Later</h2><ul></ul></section>
-    <section class="col" data-bucket="cut"><h2>Cut</h2><ul></ul></section>
-  </div>
-
-  <footer>
-    <span id="counts">Now 6 · Next 8 · Later 7 · Cut 3</span>
-    <button id="reset">Reset</button>
-    <button id="copy-md">Copy as markdown</button>
-  </footer>
-
-  <script>
-    const tickets = [/* pre-filled from the prompt */];
-    /* render, drag-drop with HTML5 DnD, keep state in a Map */
-    /* on copy-md: ## Now\n- TICK-101: short title\n... */
-  </script>
-</main>
+```css
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--md)}
+.board ul{list-style:none;margin:0;padding:var(--sm)}
+@media (max-width:860px){.board{grid-template-columns:1fr}}
 ```
 
-### Feature flag editor
-
-Toggles grouped by area; warnings when a prerequisite is off; export = the diff against the input config, just the changed keys.
-
 ```html
-<main>
-  <h1>Feature flags — staging</h1>
+<div class="shell">
+  <nav class="rail">
+    <span class="wordmark">cycle 14</span>
+    <dl>
+      <dt>Now</dt><dd class="ink">6</dd>
+      <dt>Next</dt><dd>8</dd>
+      <dt>Later</dt><dd>7</dd>
+      <dt>Cut</dt><dd class="alert">3</dd>
+    </dl>
+    <div class="rail-actions">
+      <button class="btn btn-primary-sm" id="copy-md">Copy as markdown</button>
+      <button class="btn btn-ghost-sm" id="reset">Reset</button>
+    </div>
+  </nav>
 
-  <fieldset>
-    <legend>Checkout</legend>
-    <label><input type="checkbox" data-key="checkout.express"> Express checkout</label>
-    <label><input type="checkbox" data-key="checkout.applePay" data-requires="checkout.express">
-      Apple Pay <span class="warn" hidden>requires Express checkout</span></label>
-  </fieldset>
-  <fieldset><legend>Search</legend>...</fieldset>
+  <main>
+    <header class="masthead">
+      <p class="eyebrow">Triage</p>
+      <h1>Cycle 14</h1>
+      <p class="dek">24 tickets, pre-sorted into a best guess. Drag until the cut
+         feels right, then copy out as markdown.</p>
+    </header>
 
-  <footer>
-    <button id="copy-diff">Copy diff</button>
-  </footer>
-</main>
+    <div class="board">
+      <section class="card" data-bucket="now">
+        <div class="codebar"><span class="file">Now</span><span class="right">6</span></div>
+        <ul></ul>
+      </section>
+      <section class="card" data-bucket="next">…</section>
+    </div>
+  </main>
+</div>
+
+<script>
+  const tickets = [/* pre-filled from the prompt */];
+  /* render, HTML5 drag-drop, state in a Map */
+  /* on copy-md: ## Now\n- TICK-101: short title\n... */
+</script>
 ```
 
-### Prompt tuner
-
-Editable template on the left with `{{variable}}` slots highlighted; sample inputs on the right that re-render the filled prompt live; character/token counter; copy.
+Flag editor — the constraint surfaces at the conflict:
 
 ```html
-<main class="split">
-  <section class="editor">
-    <h2>Prompt template</h2>
+<fieldset class="card inset">
+  <legend class="eyebrow">Checkout</legend>
+  <label class="row"><input type="checkbox" data-key="checkout.express"> Express checkout</label>
+  <label class="row">
+    <input type="checkbox" data-key="checkout.applePay" data-requires="checkout.express">
+    Apple Pay
+    <span class="tag high" hidden>Requires Express checkout</span>
+  </label>
+</fieldset>
+
+<div class="cta-band">
+  <button class="btn btn-primary" id="copy-diff">Copy diff</button>
+</div>
+```
+
+Prompt tuner — template left, filled samples live on the right:
+
+```html
+<div class="figrow">
+  <section class="card inset">
+    <p class="eyebrow">Prompt template</p>
     <textarea id="tmpl">You are a {{role}}. Given {{input}}, respond with...</textarea>
   </section>
-  <section class="preview">
-    <h2>Filled samples</h2>
-    <article><h3>Sample 1</h3><pre id="out-1"></pre></article>
-    <article><h3>Sample 2</h3><pre id="out-2"></pre></article>
-    <article><h3>Sample 3</h3><pre id="out-3"></pre></article>
-    <p><span id="chars">0 chars</span> · <span id="tokens">~0 tokens</span></p>
-    <button id="copy">Copy filled prompt</button>
-  </section>
-</main>
+
+  <aside class="card inset sidecard">
+    <p class="eyebrow">Filled samples</p>
+    <pre id="out-1"></pre>
+    <dl><dt>Chars</dt><dd id="chars">0</dd><dt>Tokens</dt><dd id="tokens">~0</dd></dl>
+    <button class="btn btn-primary" id="copy">Copy filled prompt</button>
+  </aside>
+</div>
 ```
 
-In all three: pre-filled, focused, exportable. That's the pattern.
+All three: pre-filled, focused, exportable.

@@ -1,91 +1,84 @@
 # Code Review & PR Writeups
 
-Diffs and call graphs are spatial information; markdown flattens them. Render the code as it actually wants to be read.
+Diffs and call graphs are spatial; markdown flattens them. House style: `../design.md`; token block and patterns in `matching-your-style.md`.
 
-## Annotated diff (for review)
+## Annotated diff
 
-For "review this PR" or "look over this change."
+For "review this PR."
 
 **Layout**
-- Title with the PR/branch name and a one-line summary.
-- A short framing block: motivation, "where to focus the review."
-- The diff itself, rendered with `+`/`-` line styling, syntax highlighting, and **margin annotations** — small numbered notes pinned to specific lines, not interleaved into the code.
-- Severity tags inline: `🟥 blocking`, `🟨 nit`, `🟦 question`, `🟩 praise`. Color-coded.
-- Jump links at the top to skip to the annotated regions.
-- File-by-file collapsible sections if the diff spans more than ~3 files.
+- A hairline card. `codebar` header: filename, `+`/`−` counts, note count.
+- **Two panes** — diff left, notes right, cross-linked: clicking a note or its pin highlights the line, and vice versa. That cross-link is the highest-value thing on the page.
+- Notes pane takes `--hairline-soft` so the shorter diff column reads as a panel split rather than dead space.
+- Severity as `tag` chips in the semantic colours: `Blocking` on error, `Nit` on warning, `Question` on link. Mono uppercase, 6px radius, no emoji.
+- Additions read blue and deletions red — the system maps success onto the accent blue.
+- A "where to focus" line above the card. Reviewers don't have time for everything.
 
-**What's load-bearing**
-- Margin annotations, not interleaved comments. Interleaved comments break the visual flow of the diff and you lose the ability to read the code as code. Margin notes preserve both.
-- Severity color-coding. Reviewers scan for red first; help them.
-- The "where to focus" framing. Reviewers don't have time for everything; tell them what matters.
+**Load-bearing**
+- Margin notes, not interleaved comments. Interleaving breaks the diff's visual flow; a side pane preserves both readings.
+- Severity colour. Reviewers scan for red first.
 
-**Common mistakes**
-- Repeating the entire diff with `<pre>` blocks and explanations between every chunk. That's a markdown article, not a review. The diff is the spine; the annotations attach to it.
-- Adding emoji-decorated bullet lists of suggestions. Pin them to the lines they refer to.
+**Avoid**
+- Re-printing the whole diff in `<pre>` with explanations between chunks. That's a markdown article. The diff is the spine; notes attach to it.
+- Bullet lists of suggestions. Pin them to lines as numbered pins.
 
-## PR writeup (for the author posting)
+## PR writeup
 
 For "write the description for this PR."
 
-**Layout**
-- Title: short, imperative ("Add streaming support to /chat endpoint").
-- Motivation: why this exists. 2–3 sentences.
-- Before/after: a real visual comparison if there's any UI or output change.
-- File-by-file tour: for each significant file, the *why* of the change in one or two sentences. Not a list of every change — the shape.
-- "Where to focus the review": which parts the author actually wants eyes on.
-- Risks / things that could go wrong / how it was tested.
-- Open questions for reviewers (if any).
+Title (short, imperative), motivation in 2–3 sentences, a real side-by-side before/after if anything visible changed, a file-by-file tour grouped by *theme* rather than alphabetically (plumbing / core logic / tests / docs), "where to focus the review," risks and how it was tested, open questions.
 
-**What's load-bearing**
-- Before/after as actual side-by-side, not "before: X, after: Y" prose.
-- The file-by-file tour grouped by *theme* of change, not alphabetical order. "Plumbing" / "core logic" / "tests" / "docs."
-- "Where to focus" — saves reviewer time, signals you've thought about it.
+**Load-bearing:** before/after as actual side-by-side, not "before: X, after: Y" prose. And "where to focus" — it saves reviewer time and signals you thought about it.
 
 ## Module map / "explain this code"
 
-For "I'm new to this package, walk me through it" or "what does this module do."
+For "walk me through this package."
 
-**Layout**
-- Top: a single-sentence summary of what the package does.
-- Below: a boxes-and-arrows diagram (inline SVG) of the modules and how they call each other. Highlight the **hot path** — the most common call sequence — in a distinct color.
-- Entry points called out explicitly: "If you're trying to do X, start at Y."
-- Per-module cards below the diagram with: what it does (one line), key types/functions, gotchas.
-- A "data lifecycle" trace: pick one realistic input, show how it flows through.
+One-sentence summary, then a boxes-and-arrows SVG of the modules with the **hot path** in a heavier ink stroke. Entry points called out by use case ("if you're trying to do X, start at Y") — code is rarely read top to bottom. Per-module cards below with what it does, key types, gotchas. Then one realistic input traced through.
 
-**What's load-bearing**
-- The diagram. The whole point is that you can see the shape at a glance.
-- The hot path highlight. Most readers care about the common case; help them ignore the edges first.
-- Entry points by use case ("if you want to do X..."). Code is rarely read top-to-bottom; help the reader find their way in.
+**Avoid** drawing every relationship — show structural, not textual, relationships. And this is an explainer, not generated API docs.
 
-**Common mistakes**
-- Drawing every relationship between every file. The diagram becomes a hairball. Show the structural relationships, not the textual ones.
-- Treating it as documentation generation. It's an explainer, not API docs.
-
-## Example sketch — annotated diff
+## Sketch
 
 ```html
-<main class="diff-view">
-  <header>
-    <h1>PR #482: Streaming support for /chat</h1>
-    <p>Author: greg · 4 files · +287 −41</p>
-    <nav class="jump-links">
-      <a href="#ann-1">🟥 #1 backpressure</a>
-      <a href="#ann-2">🟨 #2 cleanup</a>
-    </nav>
-  </header>
+<section class="card">
+  <div class="codebar">
+    <span class="file">src/chat/handler.ts</span>
+    <span class="plus">+14</span><span class="minus">−3</span>
+    <span class="right">4 notes · 2 blocking</span>
+  </div>
 
-  <section class="file" id="file-handler">
-    <h2>src/chat/handler.ts</h2>
+  <div class="diffgrid">
     <div class="diff">
-      <div class="line ctx">  function handleChat(req) {</div>
-      <div class="line add">+   const stream = createStream(req);</div>
-      <div class="line add" data-annotation="1">+   return pipeBackpressure(stream);</div>
-      <div class="line ctx">  }</div>
+      <div class="l"><span class="g">41</span>function handleChat(req) {</div>
+      <div class="l del"><span class="g">42</span>-  const msg = await complete(req);</div>
+      <div class="l add"><span class="g">42</span>+  const stream = await completeStream(req);</div>
+      <div class="l add" data-n="1"><span class="g">43</span>+  return pipeBackpressure(stream, req.signal);<span class="pin b" data-n="1">1</span></div>
+      <div class="l"><span class="g">44</span>}</div>
     </div>
-    <aside class="annotation" id="ann-1">
-      <span class="severity blocking">🟥 blocking</span>
-      <p>pipeBackpressure swallows errors silently when the consumer drops. Need to propagate up.</p>
-    </aside>
-  </section>
-</main>
+
+    <ol class="notes">
+      <li data-n="1"><span class="pin b">1</span>
+        <div>
+          <div class="hd">
+            <span class="tag blocking">Blocking</span>
+            <span class="t">Undefined <code>req.signal</code></span>
+          </div>
+          <p>Undefined on the Node adapter, so aborts never reach the model.
+             A closed tab leaves the stream running to completion.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<script>
+  /* the cross-link is the whole point — keep it this small */
+  const sel = n => {
+    document.querySelectorAll('.diff .l').forEach(l => l.classList.toggle('on', l.dataset.n === n));
+    document.querySelectorAll('.notes li').forEach(l => l.classList.toggle('on', l.dataset.n === n));
+  };
+  document.querySelectorAll('.notes li').forEach(li => li.onclick = () => sel(li.dataset.n));
+  document.querySelectorAll('.diff .pin').forEach(p => p.onclick = () => sel(p.dataset.n));
+</script>
 ```

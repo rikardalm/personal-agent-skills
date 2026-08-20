@@ -45,7 +45,7 @@ Every artifact this skill produces must satisfy all of these:
 3. **Mobile responsive.** Include `<meta name="viewport" content="width=device-width, initial-scale=1">` and a layout that survives a narrow viewport. Greg or anyone else may open it on a phone.
 4. **Real layout, not stacked headers.** If the content is a comparison, lay it out in columns. If it's a timeline, draw a timeline. If it's a diff, render a diff. Don't translate markdown structure 1:1 into HTML — that's wasted effort.
 5. **Readable on its own.** Title at the top, a one-paragraph TL;DR or framing sentence right below, then the substance. The reader should know what they're looking at within five seconds.
-6. **Tasteful by default.** A neutral but considered design: legible serif or sans body, comfortable line length (60–75ch), generous spacing, restrained color, dark-mode-friendly if cheap. Resist the default-AI aesthetic of "everything is a card with a gradient." See `references/matching-your-style.md` if the user has an existing design system to match.
+6. **Tasteful by default — and the default is the house style.** Unless the user has a design system of their own, build on the Geist system in `design.md`: a near-black ink on a near-white canvas, 1px hairlines instead of shadows, uppercase mono eyebrows labelling sections, tight negative tracking on display headings, and colour confined to one soft mesh gradient behind the headline. `references/matching-your-style.md` has the token block ready to paste and the pattern list. Resist the default-AI aesthetic of "everything is a card with a gradient."
 7. **Editors export back to text.** This one is non-negotiable for any artifact where the reader manipulates state. The artifact must end with a "copy as markdown" / "copy as JSON" / "copy as prompt" button that turns the UI state into something pasteable. The whole point of a throwaway editor is the round-trip.
 
 ## Category index
@@ -62,8 +62,11 @@ Pick the matching reference file below before drafting. Each one has the per-cat
 | Slide decks, arrow-key presentations | `references/decks.md` |
 | One-off custom editors: triage boards, flag toggles, prompt tuners, dataset curators | `references/custom-editors.md` |
 | Matching the user's existing visual style or design system | `references/matching-your-style.md` |
+| The house design system — palette, type scale, spacing, components | `design.md` (rendered: `design-reference.html`) |
 
 If the request spans multiple categories (e.g., "implementation plan with mockups and a flowchart"), read all the relevant references. They're short.
+
+`design-reference.html` is the house style rendered — contents rail, criteria matrix, two-pane diff, stat row and timeline, both button shapes. When in doubt about how a pattern should look, open it and copy from it rather than re-deriving.
 
 ## Output mechanics
 
@@ -71,7 +74,7 @@ Two environments, slightly different mechanics.
 
 ### In Claude Code
 
-Save the file to the working directory with a descriptive `kebab-case` name and a `.html` extension. Examples: `onboarding-design-explorations.html`, `pr-streaming-review.html`, `cycle-14-triage.html`. After saving, tell the user the path and offer to open it in their default browser (`open <file>` on macOS, `xdg-open <file>` on Linux). For shareable artifacts the user may upload to S3, Notion, etc. — that's their call, but mention the option once.
+Save the file to the working directory with a descriptive `kebab-case` name and a `.html` extension. Examples: `onboarding-explorations.html`, `pr-streaming-review.html`, `cycle-14-triage.html`. After saving, tell the user the path and offer to open it in their default browser (`open <file>` on macOS, `xdg-open <file>` on Linux). For shareable artifacts the user may upload to S3, Notion, etc. — that's their call, but mention the option once.
 
 If the artifact is a member of a *web* of related files (explorations → mockups → plan), put them in a folder together so they can be opened/shared as a unit.
 
@@ -87,7 +90,7 @@ HTML artifacts cost roughly 2–4× the tokens of a markdown equivalent and take
 
 ## A note on taste
 
-Bad-looking HTML is worse than good markdown. If the artifact would render as a wall of generic Tailwind cards with emoji headers, slow down. Read `references/matching-your-style.md` first. If the user has a `frontend-design` skill or design system file in the repo, lean on it. If not, default to a calm typographic layout — system serif body, restrained palette, real structure — rather than a busy "dashboard" look.
+Bad-looking HTML is worse than good markdown. If the artifact would render as a wall of generic Tailwind cards with emoji headers, slow down. Read `references/matching-your-style.md` first. The order of precedence is: the user's own design system in the codebase, then a `frontend-design` skill if one is installed, then the house style in `design.md`. Never invent a fourth thing.
 
 ## A note on what this skill is not
 

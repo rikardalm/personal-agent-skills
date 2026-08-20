@@ -1,91 +1,89 @@
 # Design & Prototypes
 
-HTML *is* the medium design ships in (eventually, even when the surface is React or Swift). That makes it the natural format for talking *about* design. It's also the only honest way to prototype motion and interaction.
+HTML is the medium design ships in, which makes it the natural format for talking *about* design — and the only honest way to prototype motion. House style: `../design.md`; token block in `matching-your-style.md`.
 
 ## Living design system
 
-For "show me our design tokens" or "lay out our color/type/spacing system."
+For "show me our design tokens."
+
+A section per category — colours, type, spacing, radii, shadows, motion — each token **rendered as itself**: colours as swatches, type as text at the real scale, spacing as visible gaps with labels, shadows on a card. A `#0070f3` next to its swatch beats the hex alone.
+
+Every specimen gets a copy button (value on click, token name on shift-click). The artifact is half reference, half tool, and the copy action is the point.
+
+Pull from the codebase — read the Tailwind config or theme file rather than inventing plausible tokens. If there's nothing to read, the system to render is the house style in `../design.md`; `../design-reference.html` is what it looks like built.
+
+**Load-bearing:** source-of-truth fidelity. An artifact that diverges from the real tokens is worse than nothing.
+
+## Component variants sheet
+
+For "show me every variant of our button."
+
+One component, every state on one page: sizes × intents × states, grouped by axis — a row per size, columns per intent. Render the real component, not a screenshot. Props underneath each variant.
+
+For buttons that means **both shapes the house style defines** — the marketing pill and the 6px app square — since mixing them is exactly the mistake the sheet exists to prevent.
+
+**Avoid** skipping the weird states (loading, empty, error) — those are the ones design systems forget and engineering ad-libs. And one component per sheet; multi-component pages become a tour, which is a different format.
+
+## Animation prototype
+
+For "let me play with this transition before wiring it in."
 
 **Layout**
-- Section per token category: colors, typography, spacing, radii, shadows, motion.
-- Each token rendered as itself: colors as swatches, type as actual rendered text at the actual scale, spacing as visible gaps with labels, shadows as shadow examples on a card.
-- Each swatch / specimen has a "copy" button that copies the token's name (`--color-accent-500`) or value (`#5B6CFF`) to clipboard. Both, ideally — value on click, name on shift-click, or two buttons.
-- Pulled from the codebase if possible. Read the CSS / Tailwind config / theme file rather than making up plausible-looking tokens.
+- The thing being animated, isolated and centred in a hairline card.
+- A `controlbar` with a control per parameter that matters — duration, delay, easing, distance. Live update as the user drags.
+- A replay button. One-shot animations are useless for tuning.
+- A `sidecard` holding the **live code output** — current parameters as CSS or framer-motion config, updating with the sliders — and a copy button.
+- An easing-curve graph beats a dropdown of names; users tune curves visually.
 
-**What's load-bearing**
-- Rendering tokens as themselves. A `#5B6CFF` next to a swatch is way better than `#5B6CFF` alone.
-- Copy buttons. The artifact is half-reference, half-tool. The copy action is the whole point.
-- Source-of-truth fidelity. If the artifact diverges from the actual tokens, it's worse than nothing.
+**Load-bearing:** the live code output. Without the copy step this is a demo, not a tool that graduates into the codebase.
 
-## Component variants sheet (contact sheet)
+**Avoid** building a generic animation playground. Stay scoped to the one transition asked about.
 
-For "show me every variant of our button/input/card."
+## Clickable flow
 
-**Layout**
-- One component, every state on a single page: sizes × intents × states (hover, focus, disabled, loading, error).
-- Group by axis: a row per size, columns per intent; or vice versa.
-- Render the *real* component (or the closest HTML/CSS approximation) — not a screenshot, not a description.
-- Underneath each variant: the props used to produce it.
+For "does this multi-screen sequence feel right."
 
-**Common mistakes**
-- Skipping the "weird" states (loading, empty, error). Those are exactly the states design systems forget to specify and engineering ad-libs.
-- Mixing components on one page. One component per sheet. Multi-component pages turn into a tour, which is a different format.
+3–6 screens in order, real next/back buttons, and a thumbnail tray so the user can jump — they'll want to compare screen 1 against screen 4 directly. Just enough fidelity to test the shape; render the fields the flow turns on, not every field. Pixel-perfect is a different artifact.
 
-## Animation/interaction prototype
+## Sketch
 
-For "I want to play with this animation/transition before wiring it in."
+The stage is the only extra rule; everything else is the token block.
 
-**Layout**
-- The thing being animated, in isolation, big and centered.
-- Sliders and toggles for every parameter that matters: duration, delay, easing curve, distance, color shift. Live update as the user drags.
-- A "play" button that re-triggers the animation (so the user doesn't have to wait for a natural trigger).
-- A code block at the bottom that shows the current parameters as CSS / JS / framer-motion config — and updates as the sliders move. Plus a "copy" button.
-- Optional: a few preset combinations the user can toggle between to compare.
-
-**What's load-bearing**
-- The live code output. The whole reason this exists is so the user can tune values and copy them back into their real codebase. Without the copy step, this is just a demo.
-- Easing curve visualization (a small graph) is dramatically better than just a dropdown of names. Users tune curves visually.
-- Re-triggerable. One-shot animations are useless for tuning.
-
-**Common mistakes**
-- Building a generic "animation playground" instead of prototyping the specific animation the user asked about. Stay scoped to the one transition.
-- No way to copy the result. The artifact then can't graduate into the real code.
-
-## Clickable interaction flow
-
-For "let me feel whether this multi-screen flow works."
-
-**Layout**
-- 3–6 screens linked together in their natural order.
-- Real (enough) buttons: clicking "next" actually advances. Clicking "back" actually goes back.
-- A "screen tray" thumbnail strip showing all screens, current one highlighted — so you can jump anywhere.
-- Just enough fidelity to test the *shape* of the flow. Don't render every form field; render the ones the flow turns on.
-
-**Common mistakes**
-- Trying to make it pixel-perfect. That's a different artifact. This is for "does the sequence feel right."
-- No way to jump between screens. Users want to compare screen 1 to screen 4 directly.
-
-## Example sketch — animation prototype
+```css
+.stage{display:grid;place-items:center;min-height:14rem;
+       background:var(--hairline-soft);border-radius:var(--r-md)}
+```
 
 ```html
-<main>
-  <section class="stage">
-    <button class="checkout-btn" id="target">Place order</button>
+<!-- a prototype is an app surface: 6px squares, pill only for the copy-out -->
+<div class="figrow">
+  <section class="card inset">
+    <p class="eyebrow">Stage</p>
+    <div class="stage">
+      <button class="btn btn-primary" id="target">Place order</button>
+    </div>
+    <div class="controlbar">
+      <label>Duration <input type="range" id="dur" min="100" max="2000" value="400"></label>
+      <label>Easing
+        <select id="ease">
+          <option>cubic-bezier(.2,.8,.2,1)</option>
+          <option>ease-out</option>
+        </select>
+      </label>
+      <span class="readout" id="readout">
+        <div><span class="v">400 ms</span><span class="k">duration</span></div>
+      </span>
+    </div>
+    <figcaption>Replay re-triggers it — one-shot animations can't be tuned.</figcaption>
   </section>
 
-  <aside class="controls">
-    <label>Duration <input type="range" id="dur" min="100" max="2000" value="400">
-           <output>400ms</output></label>
-    <label>Easing <select id="ease">
-      <option>cubic-bezier(.2,.8,.2,1)</option>
-      <option>ease-out</option>
-      ...
-    </select></label>
-    <label>End color <input type="color" id="color" value="#7c3aed"></label>
-    <button id="play">▶ Replay</button>
+  <aside class="card inset sidecard">
+    <p class="eyebrow">Current values</p>
+    <!-- live output is the reason this artifact exists -->
+    <pre id="code">transition: transform 400ms cubic-bezier(.2,.8,.2,1);</pre>
+    <dl><dt>Distance</dt><dd>12 px</dd><dt>Delay</dt><dd>0 ms</dd></dl>
+    <button class="btn btn-ghost-sm" id="replay">Replay</button>
+    <button class="btn btn-primary" id="copy">Copy CSS</button>
   </aside>
-
-  <pre id="code">/* live updates as sliders move */</pre>
-  <button id="copy">Copy CSS</button>
-</main>
+</div>
 ```

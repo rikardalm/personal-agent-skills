@@ -1,81 +1,79 @@
 # Diagrams & Illustrations
 
-Inline SVG gives the agent a real pen. The output is vector art the user can tweak by hand and copy out. Don't fall back to ASCII or "imagine a flowchart that…" prose — render it.
+Inline SVG gives the agent a real pen. Don't fall back to ASCII or "imagine a flowchart that…" — render it. House style: `../design.md`; token block in `matching-your-style.md`.
 
-## Figure sheet for a post or doc
+## Figure sheet
 
-For "make me the diagrams for this article" or "draw the figures I'll use in the writeup."
+For "make me the diagrams for this writeup."
 
-**Layout**
-- One figure per section, each in its own `<figure>` with a caption.
-- Each figure is inline `<svg>`, sized for both light and dark backgrounds (use CSS variables or `currentColor`).
-- A "copy SVG" button below each figure. The whole point is that the user pastes them into their real document.
-- Consistent visual language across figures: same line weight, same arrowhead style, same palette, same type face. They should look like a set.
-
-**What's load-bearing**
-- Visual consistency across the set. A scattered visual language reads as amateurish even if each figure is fine on its own.
-- Copy buttons per figure. Without them the user has to view-source. With them this is a usable workflow.
-- Sizing that survives reuse: don't hard-code colors that won't work in the destination doc.
+One figure per `<figure class="card inset">` with a caption and a **copy SVG** button — the point is that the user pastes them into their real document. Consistent visual language across the set: same line weight, same arrowhead, same type. A scattered set reads as amateurish even when each figure is fine alone.
 
 ## Annotated flowchart
 
-For "diagram our deploy pipeline" or "show me how a request flows through the system."
+For "diagram our deploy pipeline."
 
-**Layout**
-- The flowchart as inline SVG, drawn properly: nodes with labels, edges with directionality, branching paths visually distinct from the main path.
-- Click any node to expand a side panel with: what runs there, expected duration, what failure looks like, links to source.
-- Highlight the **happy path** in a distinct color; failure/retry paths in a muted secondary color.
-- A legend in the corner.
+Nodes with labels, edges with direction, branching visually distinct from the main path. Click a node to expand a side panel — the chart is navigation, the panel is content; don't cram everything onto the chart. Highlight the happy path with a **heavier ink stroke**, secondary paths **dashed in accent blue**, so the distinction survives greyscale and colourblind viewing. Legend in the corner.
 
-**What's load-bearing**
-- Click-to-expand. The flowchart is the navigation, the panel is the content. Don't try to fit everything on the chart itself.
-- Happy path highlight. Most of the time the reader cares about the common case; let them tune out the edges initially.
-- Direction indicators on edges. Without arrows, a flowchart is just a graph.
+**Avoid** Mermaid auto-layout hairballs (hand-place the nodes; SVG positions are just numbers), and 40-node charts — abstract rare branches into one "error handling" subgraph.
 
-**Common mistakes**
-- Auto-layout via Mermaid that produces a tangled mess. If the layout is bad, hand-place the nodes. SVG positions are just numbers.
-- Drawing every possible edge case. A flowchart with 40 nodes is unreadable; abstract the rare branches into a single "error handling" subgraph.
-- Using only color to distinguish states. Use shape *and* color so it survives colorblind viewing and grayscale printing.
+## Craftsmanship
 
-## SVG craftsmanship notes
+- **`viewBox`, never fixed `width`/`height`.** Lets the figure scale.
+- **Use the page tokens for ink** — `var(--ink)`, `var(--mute)`, `var(--hairline)`, `var(--link)` — or `currentColor`. Never a hard-coded hex: the figure then adapts to dark mode and matches the surrounding text for free.
+- **Round numbers.** `x="120"`, not `x="119.7843"`.
+- **Group with `<g>` and label it.** Someone editing by hand navigates by structure, not coordinates.
+- **Type set as `<text>`,** not paths. Selectable, copyable, accessible.
+- **No raster fallbacks.** A PNG of a diagram defeats the purpose.
 
-For both figure sheets and flowcharts:
-
-- **Use `viewBox`, not fixed `width`/`height`.** Lets the figure scale.
-- **Use `currentColor` for ink** where possible. Lets the figure inherit text color and adapt to dark mode.
-- **Round numbers.** `x="120"` not `x="119.7843"`. Easier for a human to tweak by hand.
-- **Group with `<g>` and label.** A user editing the SVG needs to find things by structure, not coordinates.
-- **Type set in SVG, not as `<text>`-rendered-as-paths.** Selectable, copyable, accessible.
-- **No raster fallbacks.** If a thing can be drawn, draw it. PNGs of diagrams defeat the whole purpose.
-
-## Example sketch — labeled flow
+## Sketch
 
 ```html
-<figure>
-  <svg viewBox="0 0 600 200" role="img" aria-labelledby="title">
+<figure class="card inset">
+  <svg class="flow" viewBox="0 0 600 200" role="img" aria-labelledby="title">
     <title id="title">Request lifecycle</title>
     <defs>
-      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
-              markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+              markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--mute)"/>
+      </marker>
+      <marker id="arrow-hot" viewBox="0 0 10 10" refX="9" refY="5"
+              markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--link)"/>
       </marker>
     </defs>
 
     <g class="node" data-step="ingress">
-      <rect x="20" y="80" width="120" height="40" rx="6"
-            fill="none" stroke="currentColor"/>
-      <text x="80" y="105" text-anchor="middle">ingress</text>
+      <rect class="n-box" x="20" y="78" width="120" height="44" rx="6"/>
+      <text class="n-lab" x="80" y="99" text-anchor="middle">ingress</text>
+      <text class="n-sub" x="80" y="113" text-anchor="middle">nginx</text>
     </g>
+    <!-- happy path node: heavier ink stroke, no fill change needed -->
     <g class="node" data-step="auth">
-      <rect x="180" y="80" width="120" height="40" rx="6"
-            fill="none" stroke="currentColor"/>
-      <text x="240" y="105" text-anchor="middle">auth</text>
+      <rect class="n-box hot" x="200" y="78" width="120" height="44" rx="6"/>
+      <text class="n-lab" x="260" y="99" text-anchor="middle">auth</text>
+      <text class="n-sub" x="260" y="113" text-anchor="middle">jwt · 4ms</text>
     </g>
-    <line x1="140" y1="100" x2="180" y2="100"
-          stroke="currentColor" marker-end="url(#arrow)"/>
-    ...
+
+    <line class="edge" x1="140" y1="100" x2="192" y2="100" marker-end="url(#arrow)"/>
+    <!-- secondary / return path: accent blue, dashed -->
+    <path class="edge back" d="M320 122 L320 156 L80 156 L80 126"
+          marker-end="url(#arrow-hot)"/>
+    <text class="elab" x="200" y="150" text-anchor="middle">retry</text>
   </svg>
   <figcaption>Happy-path request flow. Click any step for details.</figcaption>
-  <button onclick="copySvg(this)">Copy SVG</button>
+  <button class="btn btn-ghost-sm" onclick="copySvg(this)">Copy SVG</button>
 </figure>
+```
+
+The classes come from the house token block:
+
+```css
+.n-box{fill:var(--canvas-elevated);stroke:var(--hairline);stroke-width:1}
+.n-box.hot{stroke:var(--ink);stroke-width:1.5}      /* happy path */
+.n-lab{font:500 13px var(--sans);fill:var(--ink)}
+.n-sub{font:11px var(--mono);fill:var(--faint)}
+.edge{stroke:var(--mute);stroke-width:1;fill:none}
+.edge.hot{stroke:var(--ink);stroke-width:1.5}
+.edge.back{stroke:var(--link);stroke-dasharray:4 4;stroke-width:1.5}
+.elab{font:11px var(--mono);fill:var(--faint);text-transform:uppercase}
 ```
